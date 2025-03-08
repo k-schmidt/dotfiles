@@ -1,0 +1,68 @@
+* Cheatsheet for @kyle_schmidt ks-emacs
+By: Kyle Schmidt
+
+Written using Emacs Org-mode
+
+** Completions
+
+| Keybinding | Name             | Explanation                                                                    |
+|------------+------------------+--------------------------------------------------------------------------------|
+| C-\\       | company-try-hard | Word completions at point                                                      |
+| C-\\ \\    | company-try-hard | Dropdown of word completions at point                                          |
+| M-/        | hippie-expand    | Cycles through possible expression completions.                                |
+
+** Navigation
+
+| Keybinding | Name                           | Explanation                                          |
+|------------+--------------------------------+------------------------------------------------------|
+| C-x o      | ace-window                     | Choose window from multiple                          |
+| C-x C-o    | ace-swap-window                | Pop-up selection of characters to choose window      |
+| C-;        | avy-goto-word                  | Jump to word in buffer                               |
+| M-i        | helm-imenu                     | Jump to indexes particular to the current mode       |
+| C-x C-j    | dired-jump                     | Jump to Dired buffer corresponding to current buffer |
+| C-c e      | eshell                         | Jump/open eshell                                     |
+| C-c C-f    | helm-projectile-find-file-dwim | Find file in current project                         |
+| C-x C-g    | helm-projectile-grep           | Find string in project directories                   |
+| C-c h o    | helm-occur                     | Jump to string in buffer                             |
+| C-c h x    | helm-register                  | View register in helm minibuffer                     |
+| C-c h g    | helm-google-suggest            | Search for term in google                            |
+
+** Check Errors
+
+| Keybinding | Name           | Explanation            |
+|------------+----------------+------------------------|
+| M-n        | next-error     | Jump to next error     |
+| M-p        | previous-error | Jump to previous error |
+
+** Editing
+| Keybinding  | Name                         | Explanation                             |
+|-------------+------------------------------+-----------------------------------------|
+| C-%         | anzu-query-replace-at-cursor | Replace words like the one at cursor    |
+| M-%         | anzu-query-replace           | Replace string with another             |
+| C-M-%       | anzu-query-replace-regexp    | Use regex to replace string             |
+| C-S-c C-S-c | mc/edit-lines                | Edit multiple lines in region           |
+| C-<         | mc/mark-previous-like-this   | Add cursor to previous instance of mark |
+| C->         | mc/mark-next-like-this       | Add cursor to next instance of mark     |
+| C-c C-<     | mc/mark-all-like-this        | Add cursor to all instances of mark     |
+| C-=         | er/expand-region             | Expand selected region                  |
+| C-c w       | ethan-wspace-clean-all       | Remove whitespace from buffer   |
+
+** Git
+
+| Keybinding | Name                   | Explanation                                    |
+|------------+------------------------+------------------------------------------------|
+| C-x g      | magit-status           | Get the status of a git repository             |
+| <TAB>      | magit-selection-toggle | View diffs of file at point                    |
+| s           | magit-stage-file       | Stage/add the file at point                    |
+| S           | magit-stage-modified   | Stage/add all modified files                   |
+| c            | magit-commit-popup     | Popup buffer to write git commit message       |
+| C-c C-c       | magit-dispatch-popup   | Commit the changes                             |
+| P              | magit-push-popup       | Push changes                                   |
+| F              | magit-pull-popup       | Fetch changes from remote branch               |
+
+** Python
+
+| Keybinding | Name                 | Explanation                |
+|------------+----------------------+----------------------------|
+| C-c .      | jedi:goto-definition | Go to source where defined |
+| C-c C-d    | helm-pydoc           | Go to Python documentation |

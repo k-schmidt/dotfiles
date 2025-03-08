@@ -1,0 +1,21 @@
+alias c curl $*
+alias f find $*
+alias g git $*
+alias gb git branch $*
+alias gbv git branch -v $*
+alias gco git checkout
+alias gst git status
+alias l ls $*
+alias la ls -a $*
+alias lh ls -l -h $*
+alias ll ls -l $*
+alias r rgrep $*
+alias s ls $*
+alias saptc apt-cache search $*
+alias saptd sudo aptitude update $*
+alias sapti sudo aptitude install $*
+alias saptr sudo aptitude remove $*
+alias sapts apt-cache show $*
+alias top proced
+alias d dired $1
+alias ff find-file $1
