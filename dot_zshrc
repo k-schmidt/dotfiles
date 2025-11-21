@@ -1,0 +1,83 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+########## BASIC SETTINGS ##########
+
+# Use modern completions system
+autoload -Uz compinit
+compinit
+
+# Improve history behavior
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt share_history              # share history across tabs
+setopt append_history             # append instead of overwrite
+setopt hist_ignore_dups           # ignore duplicates
+setopt hist_reduce_blanks         # clean up accidental whitespace
+
+########## PATH MANAGEMENT ##########
+
+# Homebrew paths (Apple Silicon)
+if command -v brew >/dev/null 2>&1; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# Add custom bin directories
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
+########## PROMPT (POWERLEVEL10K) ##########
+# If using p10k (recommended), load it
+if [[ -f ~/.p10k.zsh ]]; then
+  source ~/.p10k.zsh
+fi
+
+########## QUALITY OF LIFE ##########
+
+# Better directory navigation
+setopt auto_cd           # typing folder name = cd into it
+setopt auto_pushd        # keeps directory stack
+setopt pushd_ignore_dups
+
+# Color support
+autoload -Uz colors && colors
+
+# Case-insensitive tab completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+########## ALIASES ##########
+
+# Listing
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -1'
+
+# Git shortcuts
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# Quick edits
+alias zshrc='code ~/.zshrc'       # If you use VS Code
+alias src='source ~/.zshrc'
+
+########## AUTOSUGGESTIONS + SYNTAX HIGHLIGHTING ##########
+# (Install via brew first; instructions below)
+
+if [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
