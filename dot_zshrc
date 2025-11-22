@@ -3,6 +3,8 @@
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+else
+  "⚠️ p10k instant prompt failed to load. Is it installed?"
 fi
 
 ########## BASIC SETTINGS ##########
@@ -32,6 +34,14 @@ export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 ########## PROMPT (POWERLEVEL10K) ##########
 # If using p10k (recommended), load it
+# Load Powerlevel10k theme
+if [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
+  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+else
+  echo "⚠️ Powerlevel10k failed to load. Is it installed?"
+fi
+
+# Load p10k configuration
 if [[ -f ~/.p10k.zsh ]]; then
   source ~/.p10k.zsh
 fi
@@ -76,8 +86,12 @@ alias src='source ~/.zshrc'
 
 if [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
     source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+else
+  "⚠️ zsh-autosuggestions failed to load. Is it installed?"
 fi
 
 if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
     source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+else
+  "⚠️ zsh-syntax-highlighting failed to load. Is it installed?"
 fi
