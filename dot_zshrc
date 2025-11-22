@@ -22,6 +22,10 @@ setopt append_history             # append instead of overwrite
 setopt hist_ignore_dups           # ignore duplicates
 setopt hist_reduce_blanks         # clean up accidental whitespace
 
+# Default editor
+export EDITOR="code --wait"
+export VISUAL="code --wait"
+
 ########## PATH MANAGEMENT ##########
 
 # Homebrew paths (Apple Silicon)
@@ -47,6 +51,9 @@ if [[ -f ~/.p10k.zsh ]]; then
 fi
 
 ########## QUALITY OF LIFE ##########
+# fzf setup
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 
 # Better directory navigation
 setopt auto_cd           # typing folder name = cd into it
