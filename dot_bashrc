@@ -1,0 +1,10 @@
+# Use Zsh as my main shell — minimal bash config
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Sensible history settings
+export HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+# Nice prompt
+PS1='\u@\h:\w\$ '
