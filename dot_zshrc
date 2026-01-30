@@ -3,30 +3,28 @@
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-else
-  "⚠️ p10k instant prompt failed to load. Is it installed?"
 fi
 
-########## BASIC SETTINGS ##########
+########## OH-MY-ZSH CONFIGURATION ##########
 
-# Use modern completions system
-autoload -Uz compinit
-compinit
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
 
-# Improve history behavior
-HISTFILE=~/.zsh_history
-HISTSIZE=50000
-SAVEHIST=50000
-setopt share_history              # share history across tabs
-setopt append_history             # append instead of overwrite
-setopt hist_ignore_dups           # ignore duplicates
-setopt hist_reduce_blanks         # clean up accidental whitespace
+# Set the theme to Powerlevel10k
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Default editor
-export EDITOR="code --wait"
-export VISUAL="code --wait"
+# Define plugins here. OMZ will handle the sourcing and paths for you.
+# This fixes the "logic mismatch" error you were seeing.
+plugins=(
+    git
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+)
 
-########## PATH MANAGEMENT ##########
+# Load Oh My Zsh (This must happen AFTER defining plugins and theme)
+source $ZSH/oh-my-zsh.sh
+
+########## PATH & ENVIRONMENT ##########
 
 # Homebrew paths (Apple Silicon)
 if command -v brew >/dev/null 2>&1; then
@@ -36,73 +34,51 @@ fi
 # Add custom bin directories
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
-########## PROMPT (POWERLEVEL10K) ##########
-# If using p10k (recommended), load it
-# Load Powerlevel10k theme
-if [[ -f /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme ]]; then
-  source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-else
-  echo "⚠️ Powerlevel10k failed to load. Is it installed?"
-fi
+# Default editor
+export EDITOR="code --wait"
+export VISUAL="code --wait"
 
-# Load p10k configuration
-if [[ -f ~/.p10k.zsh ]]; then
-  source ~/.p10k.zsh
-fi
+########## SETTINGS & ALIASES ##########
 
-########## QUALITY OF LIFE ##########
-# fzf setup
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt share_history
+setopt append_history
+setopt hist_ignore_dups
+setopt hist_reduce_blanks
 
-
-# Better directory navigation
-setopt auto_cd           # typing folder name = cd into it
-setopt auto_pushd        # keeps directory stack
+# Navigation
+setopt auto_cd
+setopt auto_pushd
 setopt pushd_ignore_dups
 
-# Color support
-autoload -Uz colors && colors
-
-# Case-insensitive tab completion
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-
-########## ALIASES ##########
-
-# Listing
+# Aliases
 alias ll='ls -lah'
 alias la='ls -A'
 alias l='ls -1'
-
-# Git shortcuts
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'
 alias gp='git push'
 alias gl='git pull'
-
-# Navigation
 alias ..='cd ..'
 alias ...='cd ../..'
 
-# Quick edits
-alias zshrc='code ~/.zshrc'       # If you use VS Code
+# Quick Config Edits
+alias zshrc='code ~/.zshrc'
 alias src='source ~/.zshrc'
 
-########## AUTOSUGGESTIONS + SYNTAX HIGHLIGHTING ##########
-# (Install via brew first; instructions below)
+########## FINALIZATION ##########
 
-if [[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-else
-  "⚠️ zsh-autosuggestions failed to load. Is it installed?"
-fi
+# FZF setup (if installed)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-if [[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-else
-  "⚠️ zsh-syntax-highlighting failed to load. Is it installed?"
-fi
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# NVM Configuration
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
