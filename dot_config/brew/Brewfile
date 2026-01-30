@@ -6,6 +6,7 @@ brew "direnv"
 brew "difftastic"
 brew "node"
 brew "ripgrep"
+brew "fzf"
 
 # Applications (Casks)
 cask "cursor"
@@ -15,6 +16,7 @@ cask "raycast"
 cask "obsidian"
 cask "ollama-app"
 cask "todoist-app"
+cask "iterm2"
 
 # Fonts
 cask "font-jetbrains-mono-nerd-font"
