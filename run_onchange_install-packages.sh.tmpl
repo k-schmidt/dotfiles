@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# dot_config/brew/Brewfile hash: {{ include "dot_config/brew/Brewfile" | sha256sum }}
+
+if command -v brew >/dev/null 2>&1; then
+    echo "🍺  Brewfile change detected. Installing packages..."
+    brew bundle --file=~/.config/brew/Brewfile
+else
+    echo "Error: Homebrew not found. Skipping package installation."
+fi

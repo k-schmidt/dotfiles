@@ -1,0 +1,20 @@
+# Core Engineering
+brew "git"
+brew "gh"
+brew "uv"
+brew "direnv"
+brew "difftastic"
+brew "node"
+brew "ripgrep"
+
+# Applications (Casks)
+cask "cursor"
+cask "orbstack"
+cask "visual-studio-code"
+cask "raycast"
+cask "obsidian"
+cask "ollama-app"
+cask "todoist-app"
+
+# Fonts
+cask "font-jetbrains-mono-nerd-font"
