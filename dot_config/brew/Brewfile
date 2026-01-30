@@ -17,6 +17,7 @@ cask "obsidian"
 cask "ollama-app"
 cask "todoist-app"
 cask "iterm2"
+cask "keepingyouawake"
 
 # Fonts
 cask "font-jetbrains-mono-nerd-font"
