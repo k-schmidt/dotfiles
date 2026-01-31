@@ -1,0 +1,12 @@
+#!/bin/bash
+{{ if eq .chezmoi.os "darwin" -}}
+
+# 1. Enable Dark Mode
+osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+
+# 2. (Optional) Set iTerm2 to load config from your dotfiles directory
+# This allows chezmoi to manage iTerm2 settings via a plist file
+defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/.config/iterm2"
+defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+
+{{ end -}}
