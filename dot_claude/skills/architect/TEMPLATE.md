@@ -22,3 +22,12 @@
 * **Test Plan:** [Command to run tests, e.g., `pytest` or `npm test`]
 * **Manual Verify:** [How to verify if automated tests fail]
 * **Rollback:** [How to undo this change if it breaks prod]
+
+## 5. Ralph Execution Plan (Machine Readable)
+*STOP: Extract the implementation steps above into a strict atomic checklist for the Ralph Loop.*
+*Format constraints: Use standard markdown checkboxes `[ ]`. Do not nest them.*
+
+- [ ] [Step 1: Setup/Scaffold]
+- [ ] [Step 2: Core Implementation]
+- [ ] [Step 3: Testing]
+- [ ] [Step 4: Cleanup/Docs]

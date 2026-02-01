@@ -1,6 +1,4 @@
 {
   "commands": {
-    "/git": "Review the `git diff` and suggest a Conventional Commit message.",
-    "/tests": "Run the project's test suite and analyze any failures."
   }
 }
