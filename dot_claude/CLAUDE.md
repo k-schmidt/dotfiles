@@ -36,7 +36,7 @@
 # Common Commands & Workflows
 
 ## Python
-- **Install/Sync**: `uv sync` or `poetry install`
+- **Install/Sync**: `uv sync` (never use pip venvs, Poetry, or requirements.txt unless explicitly asked)
 - **Test**: `pytest -v --durations=5` (Show slow tests)
 - **Lint**: `ruff check . --fix`
 - **Format**: `ruff format .`
