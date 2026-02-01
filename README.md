@@ -8,7 +8,7 @@ This is an automated developer environment setup for macOS, built with **chezmoi
 * **Editor:** [Cursor](https://cursor.sh) (AI-native) & VS Code
 * **Terminal:** iTerm2 with [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
 * **Python:** `uv` (Blazing fast package management)
-* **AI Agents:** `claude-code`, `ollama`
+* **AI Agents:** `claude-code`, `ollama`, `ralph`
 * **Infra:** `orbstack` (Docker replacement), `direnv`, `gh`
 * **Productivity:** Raycast, Obsidian, Todoist
 
@@ -83,9 +83,45 @@ git push
 
 ```
 
+## 🤖 Claude Code Configuration
+
+This repo includes custom configuration for [Claude Code](https://claude.ai/claude-code).
+
+### Skills
+
+Skills are reusable prompts that extend Claude Code's capabilities:
+
+* **`/architect`** - Generates a structured PRD (Product Requirements Document) for any feature request. Outputs a `PRD.md` file ready for implementation.
+* **`/dotfiles`** - Manages dotfiles with chezmoi. Handles adding files, committing, and syncing.
+
+### Custom Commands
+
+Defined in `~/.claude/config.json`:
+
+* **`/git`** - Reviews `git diff` and suggests a Conventional Commit message.
+* **`/tests`** - Runs the project's test suite and analyzes failures.
+
+### Ralph - Autonomous Agent Loop
+
+`ralph` is a bash script that runs Claude Code in an autonomous loop. It reads a `PRD.md` checklist and executes tasks one at a time until complete.
+
+```bash
+# Usage: Run in any directory with a PRD.md
+ralph
+```
+
+**How it works:**
+1. Reads `PRD.md` for unchecked tasks (`[ ]`)
+2. Executes the first unchecked task
+3. Marks it complete (`[x]`) and logs to `PROGRESS.md`
+4. Repeats until all tasks are done (max 20 iterations)
+
 ## 📂 Structure
 
 * `run_onchange_install-packages.sh`: Watches `Brewfile` and runs `brew bundle`.
 * `dot_config/brew/Brewfile`: The master list of all software.
 * `dot_zshrc`: Shell configuration (OMZ, Plugins, Aliases).
 * `run_once_*.sh`: Setup scripts that run only on the first install (macOS defaults, node tools, etc).
+* `dot_local/bin/executable_ralph`: Autonomous Claude loop script.
+* `dot_claude/skills/`: Claude Code skill definitions.
+* `dot_claude/config.json`: Claude Code custom commands.
