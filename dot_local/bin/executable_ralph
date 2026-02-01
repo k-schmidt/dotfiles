@@ -1,0 +1,64 @@
+#!/bin/bash
+# ralph - The Autonomous Claude Loop
+
+MAX_LOOPS=20
+PRD_FILE="PRD.md"
+LOG_FILE="PROGRESS.md"
+
+# 1. Safety Checks
+if [ ! -f "$PRD_FILE" ]; then
+    echo "❌ Error: No '$PRD_FILE' found in current directory."
+    echo "   Create a $PRD_FILE with a checklist of tasks to start."
+    exit 1
+fi
+
+if [ ! -f "$LOG_FILE" ]; then
+    echo "📝 Creating empty $LOG_FILE..."
+    touch "$LOG_FILE"
+fi
+
+# 2. The Loop
+count=0
+while [ $count -lt $MAX_LOOPS ]; do
+    echo "---------------------------------------------------"
+    echo "🤖 Ralph Loop: Iteration $((count+1)) / $MAX_LOOPS"
+    echo "---------------------------------------------------"
+
+    # Check if there are tasks left
+    if ! grep -q "\[ \]" "$PRD_FILE"; then
+        echo "✅ All tasks in $PRD_FILE are checked off!"
+        echo "🎉 Ralph has finished his work."
+        break
+    fi
+
+    # The Prompt: Strictly instructs Claude to be atomic
+    claude -p "
+      CONTEXT: You are an autonomous agent running inside a loop (Iteration $count).
+
+      FILES:
+      - '$PRD_FILE': The master plan.
+      - '$LOG_FILE': Your memory of previous steps.
+
+      YOUR GOAL:
+      1. Read '$PRD_FILE' and find the FIRST unchecked item ( [ ] ).
+      2. Read '$LOG_FILE' to see if there were recent errors.
+      3. Execute that ONE task (write code, run tests).
+      4. If successful:
+         - Update '$PRD_FILE' to mark it [x].
+         - Append a success log to '$LOG_FILE'.
+      5. If you fail:
+         - Append the error details to '$LOG_FILE'.
+         - Do NOT mark the task done.
+
+      CONSTRAINT:
+      - Do NOT attempt multiple tasks.
+      - Do NOT ask the user for permission.
+      - Exit immediately after one cycle.
+    "
+
+    # Increment counter
+    ((count++))
+
+    # Optional: Brief pause to let you hit Ctrl+C if needed
+    sleep 2
+done
