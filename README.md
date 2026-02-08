@@ -5,12 +5,12 @@ This is an automated developer environment setup for macOS, built with **chezmoi
 ## 🛠 The Stack
 
 * **Core:** `zsh`, `chezmoi`, `homebrew`
-* **Editor:** [Cursor](https://cursor.sh) (AI-native) & VS Code
-* **Terminal:** iTerm2 with [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
+* **Editor:** [Cursor](https://cursor.sh) (AI-native) & VS Code & Neovim
+* **Terminal:** iTerm2 with [Powerlevel10k](https://github.com/romkatv/powerlevel10k), `tmux`, `fzf`, `ripgrep`
 * **Python:** `uv` (Blazing fast package management)
 * **AI Agents:** `claude-code`, `ollama`, `ralph`
-* **Infra:** `orbstack` (Docker replacement), `direnv`, `gh`
-* **Productivity:** Raycast, Obsidian, Todoist
+* **Infra:** `orbstack` (Docker replacement), `direnv`, `gh`, `difftastic`
+* **Productivity:** Raycast, Obsidian, Todoist, KeepingYouAwake
 
 ## 🚀 Installation (Fresh Machine)
 
@@ -49,7 +49,7 @@ Automation gets us 95% of the way there. Complete these steps manually:
 
 3. **System Permissions:**
 * **System Settings > Privacy & Security > Accessibility**: Grant access to iTerm2 and Raycast.
-* **Touch ID for Sudo:** The script attempts to enable this, but if `sudo` still asks for a password, run:
+* **Touch ID for Sudo:** To enable Touch ID for `sudo`, run:
 ```bash
 sudo sed -i '' '2i\auth       sufficient     pam_tid.so' /etc/pam.d/sudo
 
@@ -94,13 +94,6 @@ Skills are reusable prompts that extend Claude Code's capabilities:
 * **`/architect`** - Generates a structured PRD (Product Requirements Document) for any feature request. Outputs a `PRD.md` file ready for implementation.
 * **`/dotfiles`** - Manages dotfiles with chezmoi. Handles adding files, committing, and syncing.
 
-### Custom Commands
-
-Defined in `~/.claude/config.json`:
-
-* **`/git`** - Reviews `git diff` and suggests a Conventional Commit message.
-* **`/tests`** - Runs the project's test suite and analyzes failures.
-
 ### Ralph - Autonomous Agent Loop
 
 `ralph` is a bash script that runs Claude Code in an autonomous loop. It reads a `PRD.md` checklist and executes tasks one at a time until complete.
@@ -118,10 +111,16 @@ ralph
 
 ## 📂 Structure
 
-* `run_onchange_install-packages.sh`: Watches `Brewfile` and runs `brew bundle`.
+* `dot_zshrc`: Shell configuration (Oh My Zsh, Powerlevel10k, aliases).
+* `dot_tmux.conf`: Tmux configuration (Ctrl-a prefix, mouse mode, TPM plugins).
+* `dot_gitconfig` / `dot_gitignore_global`: Git user config and global ignores.
+* `dot_p10k.zsh`: Powerlevel10k prompt theme configuration.
+* `dot_fzf.zsh` / `dot_fzf.bash`: fzf shell integration.
 * `dot_config/brew/Brewfile`: The master list of all software.
-* `dot_zshrc`: Shell configuration (OMZ, Plugins, Aliases).
-* `run_once_*.sh`: Setup scripts that run only on the first install (macOS defaults, node tools, etc).
+* `dot_config/nvim/`: Neovim configuration (lazy.nvim, Catppuccin, Telescope).
+* `dot_config/iterm2/`: iTerm2 preferences plist.
+* `dot_claude/`: Claude Code global instructions, skills, and config.
 * `dot_local/bin/executable_ralph`: Autonomous Claude loop script.
-* `dot_claude/skills/`: Claude Code skill definitions.
-* `dot_claude/config.json`: Claude Code custom commands.
+* `Library/LaunchAgents/`: Caps Lock → Control key remapping via `hidutil`.
+* `run_onchange_install-packages.sh`: Watches `Brewfile` and runs `brew bundle`.
+* `run_once_*.sh`: One-time setup scripts (zsh plugins, TPM, macOS defaults, key remapping).
