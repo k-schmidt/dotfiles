@@ -8,6 +8,7 @@ brew "node"
 brew "ripgrep"
 brew "fzf"
 brew "tmux"
+brew "neovim"
 
 # Applications (Casks)
 cask "cursor"

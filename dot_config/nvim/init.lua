@@ -1,14 +1,30 @@
 -- ~/.config/nvim/init.lua
 
--- Set <space> as the leader key
+-- 1. Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- 2. Leader Key (Must be set BEFORE loading lazy)
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
--- Basic Options
-vim.opt.number = true             -- Show line numbers
-vim.opt.relativenumber = true     -- Relative line numbers
-vim.opt.clipboard = "unnamedplus" -- Sync with system clipboard
-vim.opt.ignorecase = true         -- Case insensitive searching
-vim.opt.smartcase = true          -- Case sensitive if uppercase present
+-- 3. Load Plugins from lua/plugins directory
+require("lazy").setup("plugins")
 
--- Example Keymap (Save with <leader>w)
-vim.keymap.set("n", "<leader>w", ":w<CR>")
+-- 4. Apply the Colorscheme
+vim.cmd.colorscheme "catppuccin"
+
+-- 5. Basic Options (Keep your existing settings here)
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.clipboard = "unnamedplus"
