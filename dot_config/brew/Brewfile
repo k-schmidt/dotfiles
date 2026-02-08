@@ -4,11 +4,11 @@ brew "gh"
 brew "uv"
 brew "direnv"
 brew "difftastic"
-brew "node"
 brew "ripgrep"
 brew "fzf"
 brew "tmux"
 brew "neovim"
+brew "volta"
 
 # Applications (Casks)
 cask "cursor"

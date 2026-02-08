@@ -1,0 +1,8 @@
+[packages]
+  volta = [
+    "node",
+    "@anthropic-ai/claude-code",
+    "@openai/codex",
+    "typescript",
+    "neovim"
+  ]

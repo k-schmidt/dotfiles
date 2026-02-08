@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# run_onchange_after_install-volta-packages.sh.tmpl
+
+# This hash comment forces the script to re-run whenever your TOML package list changes:
+# packages: {{ .packages.volta | quote }}
+
+set -eufo pipefail
+
+# 1. Ensure Volta is in the PATH for this script session
+# (Crucial for fresh installs where the shell hasn't restarted yet)
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Check if Volta is actually installed before proceeding
+if ! command -v volta &> /dev/null; then
+    echo "Volta not found. Skipping package installation."
+    exit 0
+fi
+
+echo "Installing/Updating Volta packages..."
+
+# 2. Iterate through the list defined in .chezmoidata.toml
+{{ range .packages.volta -}}
+volta install {{ . | quote }}
+{{ end -}}
+
+echo "Volta packages installed."

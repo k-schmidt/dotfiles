@@ -1,5 +1,5 @@
 [core]
-	excludesfile = /Users/kyleschmidt/.gitignore_global
+	excludesfile = ~/.gitignore_global
 [user]
     name = Kyle Schmidt
     email = kyle.a.schmidt@gmail.com
