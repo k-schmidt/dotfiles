@@ -82,7 +82,10 @@ alias src='source ~/.zshrc'
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
-# Prefer system-installed claude over Volta-installed claude
+# Prefer system-installed CLI tools over Volta-installed versions
 if [[ -x /usr/local/bin/claude ]]; then
   alias claude='/usr/local/bin/claude'
+fi
+if [[ -x /usr/local/bin/codex ]]; then
+  alias codex='/usr/local/bin/codex'
 fi
