@@ -7,6 +7,7 @@ brew "difftastic"
 brew "node"
 brew "ripgrep"
 brew "fzf"
+brew "tmux"
 
 # Applications (Casks)
 cask "cursor"
