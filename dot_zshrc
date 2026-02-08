@@ -81,3 +81,8 @@ alias src='source ~/.zshrc'
 # Volta (Node version manager)
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Prefer system-installed claude over Volta-installed claude
+if [[ -x /usr/local/bin/claude ]]; then
+  alias claude='/usr/local/bin/claude'
+fi
