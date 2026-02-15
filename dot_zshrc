@@ -35,8 +35,8 @@ fi
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
 # Default editor
-export EDITOR="code --wait"
-export VISUAL="code --wait"
+export EDITOR="nvim"
+export VISUAL="nvim"
 
 ########## SETTINGS & ALIASES ##########
 
