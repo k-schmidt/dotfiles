@@ -66,6 +66,18 @@ alias gl='git pull'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+# tmux
+alias t="tmux"
+alias ta="tmux attach -t"
+alias tn="tmux new -s"
+alias tl="tmux ls"
+alias tk="tmux kill-session -t"
+
+# neovim
+alias v="nvim"
+alias vi="nvim"
+alias vim="nvim"
+
 # Quick Config Edits
 alias zshrc='code ~/.zshrc'
 alias src='source ~/.zshrc'
