@@ -102,4 +102,4 @@ if [[ -x /usr/local/bin/codex ]]; then
   alias codex='/usr/local/bin/codex'
 fi
 
-alias cc='claude --dangerously-bypass-permissions'
+alias cc='claude --dangerously-skip-permissions'
