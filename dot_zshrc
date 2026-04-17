@@ -94,6 +94,11 @@ alias src='source ~/.zshrc'
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
+# Ensure Homebrew takes priority over Volta
+if [[ -d /opt/homebrew/bin ]]; then
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+fi
+
 # Prefer system-installed CLI tools over Volta-installed versions
 if [[ -x /usr/local/bin/claude ]]; then
   alias claude='/usr/local/bin/claude'
