@@ -4,3 +4,10 @@ LICENSE
 .gitignore
 scripts/
 *.swp
+
+{{ if ne .chezmoi.os "darwin" }}
+Library/
+run_once_activate_key_remapping.sh
+run_once_set_macos_defaults.sh
+.config/iterm2/
+{{ end }}

@@ -50,6 +50,37 @@
 - **Commit Style**: Conventional Commits (`feat:`, `fix:`, `chore:`).
 - **Pre-Commit**: Always run `pre-commit run --all-files` before finalizing.
 
+# Dotfiles Repository
+
+## Chezmoi Workflow
+- **Always edit source files** in `~/.local/share/chezmoi/`, never the target files (e.g., `~/.zshrc`) directly.
+- **File naming**: chezmoi uses `dot_` prefix for dotfiles (`dot_zshrc` → `~/.zshrc`), `executable_` for scripts, `run_onchange_` / `run_once_` for hooks.
+- **Push after commit**: always push to `origin/master` so the Linux machine stays in sync.
+
+### Common Commands
+- `chezmoi add <file>` — start managing a new file (e.g., `chezmoi add ~/.config/nvim/init.lua`).
+- `chezmoi edit <file>` — open the source file in `$EDITOR`.
+- `chezmoi apply` — apply all changes (or `chezmoi apply ~/.zshrc` for a single file).
+- `chezmoi diff` — preview changes before applying.
+- `chezmoi status` — show which targets have changed.
+- `chezmoi managed` — list all managed files.
+- `chezmoi re-add` — re-sync source from target when the target was edited directly by mistake.
+- `chezmoi forget <file>` — stop managing a file without deleting it.
+- `chezmoi cd` — drop into a shell in the source directory.
+- `chezmoi doctor` — diagnose issues.
+
+## Cross-Platform Awareness
+- The zshrc is shared across **macOS (Apple Silicon)** and **Linux**.
+- Guard platform-specific paths with existence checks:
+  - Homebrew: `if [[ -d /opt/homebrew/bin ]]; then ... fi`
+  - Brew shellenv: `if command -v brew >/dev/null 2>&1; then ... fi`
+- Never assume `/opt/homebrew` exists unconditionally.
+
+## PATH Ordering
+- Volta (`$VOLTA_HOME/bin`) is added to PATH in the zshrc.
+- Homebrew (`/opt/homebrew/bin`, `/opt/homebrew/sbin`) **must appear after Volta** in the file so it prepends last and takes priority.
+- Final effective order: Homebrew > Volta > system.
+
 # Plan Mode Protocols
 *Trigger: When tasks involve >2 files or architectural changes.*
 1. **Explore**: Map dependencies and potential side effects.
