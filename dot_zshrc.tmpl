@@ -26,10 +26,14 @@ source $ZSH/oh-my-zsh.sh
 
 ########## PATH & ENVIRONMENT ##########
 
-# Homebrew paths (Apple Silicon)
-if command -v brew >/dev/null 2>&1; then
+{{- if eq .chezmoi.os "darwin" }}
+# Homebrew paths (macOS)
+if [[ -x /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
 fi
+{{- end }}
 
 # Add custom bin directories
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
@@ -84,8 +88,15 @@ alias src='source ~/.zshrc'
 
 ########## FINALIZATION ##########
 
-# FZF setup (if installed)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# FZF setup
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# Zoxide (smarter cd)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -94,10 +105,12 @@ alias src='source ~/.zshrc'
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
+{{- if eq .chezmoi.os "darwin" }}
 # Ensure Homebrew takes priority over Volta
 if [[ -d /opt/homebrew/bin ]]; then
   export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 fi
+{{- end }}
 
 # Prefer system-installed CLI tools over Volta-installed versions
 if [[ -x /usr/local/bin/claude ]]; then
