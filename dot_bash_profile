@@ -1,5 +1,5 @@
-# Set proxy for Meta devvms (no-op on macOS where github.com resolves directly)
-if [ "$(uname)" = "Linux" ] && ! host github.com >/dev/null 2>&1; then
+# Set proxy on Meta devvms (fwdproxy exists only on internal machines)
+if [ "$(uname)" = "Linux" ] && [ -e /etc/fbwhoami ]; then
   export http_proxy=http://fwdproxy:8080
   export https_proxy=http://fwdproxy:8080
 fi
