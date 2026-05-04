@@ -1,6 +1,6 @@
 # Launch zsh if available and not already running
-if [ -x /bin/zsh ] && [ "$SHELL" != "/bin/zsh" ]; then
-  exec /bin/zsh -l
+if command -v zsh >/dev/null 2>&1 && [ -z "$ZSH_VERSION" ]; then
+  exec zsh -l
 fi
 
 # Use Zsh as my main shell — minimal bash config
