@@ -1,3 +1,8 @@
+# Launch zsh if available and not already running
+if [ -x /bin/zsh ] && [ "$SHELL" != "/bin/zsh" ]; then
+  exec /bin/zsh -l
+fi
+
 # Use Zsh as my main shell — minimal bash config
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
