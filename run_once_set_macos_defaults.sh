@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "$(uname)" != "Darwin" ]; then
+  exit 0
+fi
+
 # Fast Key Repeat (Essential for coding)
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
