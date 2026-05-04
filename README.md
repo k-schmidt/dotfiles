@@ -1,126 +1,109 @@
-# ⚡️ Dotfiles
+# Dotfiles
 
-This is an automated developer environment setup for macOS, built with **chezmoi**. It is opinionated and optimized for AI Engineering, Data Infrastructure, and high-performance workflows.
+Cross-platform developer environment (macOS + Linux devvms) managed with **chezmoi**. Optimized for AI Engineering, Data Infrastructure, and high-performance workflows.
 
-## 🛠 The Stack
+## The Stack
 
-* **Core:** `zsh`, `chezmoi`, `homebrew`
+* **Core:** `zsh`, `chezmoi`, `homebrew` (macOS), `fwdproxy` (Linux devvms)
 * **Editor:** [Cursor](https://cursor.sh) (AI-native) & VS Code & Neovim
 * **Terminal:** iTerm2 with [Powerlevel10k](https://github.com/romkatv/powerlevel10k), `tmux`, `fzf`, `ripgrep`
 * **Python:** `uv` (Blazing fast package management)
-* **AI Agents:** `claude-code`, `ollama`, `ralph`
+* **AI Agents:** `claude-code`
 * **Infra:** `orbstack` (Docker replacement), `direnv`, `gh`, `difftastic`
 * **Productivity:** Raycast, Obsidian, Todoist, KeepingYouAwake
 
-## 🚀 Installation (Fresh Machine)
+## Installation
 
-1. **Install Xcode Command Line Tools:**
+### macOS (Fresh Machine)
+
+1. Install Xcode Command Line Tools:
 ```bash
 xcode-select --install
-
 ```
 
-
-2. **Bootstrap & Apply:**
-Run this single command to install Homebrew, clone this repo, and set up the machine.
+2. Bootstrap & apply:
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply k-schmidt
-
 ```
 
+### Linux Devvm
 
-*(Replace `k-schmidt` with your actual GitHub username)*
+1. Clone and bootstrap (proxy required for GitHub access):
+```bash
+export http_proxy=http://fwdproxy:8080 https_proxy=http://fwdproxy:8080
+git clone https://github.com/k-schmidt/dotfiles.git ~/dotfiles
+cd ~/dotfiles && ./executable_chezmoi_install.sh
+```
 
-## 🛑 Post-Install (Manual Steps)
+2. Symlink chezmoi source to the git repo:
+```bash
+rm -rf ~/.local/share/chezmoi
+ln -s ~/dotfiles ~/.local/share/chezmoi
+```
 
-Automation gets us 95% of the way there. Complete these steps manually:
+3. Future updates:
+```bash
+cd ~/dotfiles && git pull && ~/.local/bin/chezmoi apply
+```
 
-1. **Authenticate Tools:**
-* **GitHub:** `gh auth login`
-* **Claude:** `claude auth login`
-* **OrbStack:** Open the app once to initialize the Docker engine.
+### Post-Install (macOS only)
 
-
-2. **Terminal Fonts (Critical):**
-* Open iTerm2 → *Settings* (`Cmd+,`) → *Profiles* → *Text*.
-* Set Font to **JetBrainsMono Nerd Font**.
-* *Without this, the prompt icons will be broken squares.*
-
-
-3. **System Permissions:**
-* **System Settings > Privacy & Security > Accessibility**: Grant access to iTerm2 and Raycast.
-* **Touch ID for Sudo:** To enable Touch ID for `sudo`, run:
+1. **Authenticate:** `gh auth login` and `claude auth login`
+2. **Fonts:** iTerm2 → Settings → Profiles → Text → **JetBrainsMono Nerd Font**
+3. **Touch ID for sudo:**
 ```bash
 sudo sed -i '' '2i\auth       sufficient     pam_tid.so' /etc/pam.d/sudo
-
 ```
 
-## 🔧 Workflow & Maintenance
+## Workflow
 
-### Adding a new tool (Brew)
+### Editing configs
 
-Don't install manually. Add it to the manifest:
+Always edit source files, never targets:
 
-1. Edit the Brewfile: `chezmoi edit ~/.config/brew/Brewfile`
-2. Apply changes: `chezmoi apply`
+```bash
+chezmoi edit ~/.zshrc
+chezmoi apply
+```
 
-### Editing Configs
+### Adding a Brew package (macOS)
 
-To change your `.zshrc`, `.gitconfig`, etc.:
+```bash
+chezmoi edit ~/.config/brew/Brewfile
+chezmoi apply
+```
 
-1. `chezmoi edit ~/.zshrc`
-2. `chezmoi apply`
-
-### Saving Changes
-
-When you are happy with your setup, push changes back to GitHub:
+### Saving changes
 
 ```bash
 cd ~/.local/share/chezmoi
-git add .
-git commit -m "feat: updated config"
+git add . && git commit -m "feat: description"
 git push
-
 ```
 
-## 🤖 Claude Code Configuration
+## Claude Code Skills
 
-This repo includes custom configuration for [Claude Code](https://claude.ai/claude-code).
+Skills are reusable prompts that extend Claude Code. Pipeline: `/grill-with-docs` → `/to-prd` → `/to-issues`.
 
-### Skills
+* **`/grill-with-docs`** — Interview-style session that stress-tests a plan against the project's domain model. Updates `docs/CONTEXT.md` and `docs/adr/` inline as decisions crystallize.
+* **`/to-prd`** — Synthesizes conversation context into a file-based PRD at `specs/PRD-{name}.md`. Captures what to build and why.
+* **`/to-issues`** — Breaks a PRD into tracer-bullet vertical slices. Each issue cuts end-to-end through all layers.
+* **`/improve-codebase-architecture`** — Surfaces deepening opportunities: refactors that turn shallow modules into deep ones.
+* **`/dotfiles`** — Manages dotfiles with chezmoi. Handles adding files, committing, and syncing.
 
-Skills are reusable prompts that extend Claude Code's capabilities:
+## Structure
 
-* **`/architect`** - Generates a structured PRD (Product Requirements Document) for any feature request. Outputs a `PRD.md` file ready for implementation.
-* **`/dotfiles`** - Manages dotfiles with chezmoi. Handles adding files, committing, and syncing.
+* `dot_zshrc` — Shell config (Oh My Zsh, Powerlevel10k, aliases)
+* `dot_bashrc` / `dot_bash_profile` — Bash config (auto-launches zsh, proxy detection for devvms)
+* `dot_tmux.conf` — Tmux (Ctrl-a prefix, mouse mode, TPM plugins)
+* `dot_gitconfig` / `dot_gitignore_global` — Git user config and global ignores
+* `dot_p10k.zsh` — Powerlevel10k prompt theme
+* `dot_config/brew/Brewfile` — Master list of Homebrew packages (macOS only)
+* `dot_config/nvim/` — Neovim configuration (lazy.nvim, Catppuccin, Telescope)
+* `dot_config/iterm2/` — iTerm2 preferences plist (macOS only)
+* `dot_claude/` — Claude Code global instructions, skills, and config
+* `run_once_*.sh` — One-time setup scripts (zsh plugins, TPM, macOS defaults)
 
-### Ralph - Autonomous Agent Loop
+### Cross-platform notes
 
-`ralph` is a bash script that runs Claude Code in an autonomous loop. It reads a `PRD.md` checklist and executes tasks one at a time until complete.
-
-```bash
-# Usage: Run in any directory with a PRD.md
-ralph
-```
-
-**How it works:**
-1. Reads `PRD.md` for unchecked tasks (`[ ]`)
-2. Executes the first unchecked task
-3. Marks it complete (`[x]`) and logs to `PROGRESS.md`
-4. Repeats until all tasks are done (max 20 iterations)
-
-## 📂 Structure
-
-* `dot_zshrc`: Shell configuration (Oh My Zsh, Powerlevel10k, aliases).
-* `dot_tmux.conf`: Tmux configuration (Ctrl-a prefix, mouse mode, TPM plugins).
-* `dot_gitconfig` / `dot_gitignore_global`: Git user config and global ignores.
-* `dot_p10k.zsh`: Powerlevel10k prompt theme configuration.
-* `dot_fzf.zsh` / `dot_fzf.bash`: fzf shell integration.
-* `dot_config/brew/Brewfile`: The master list of all software.
-* `dot_config/nvim/`: Neovim configuration (lazy.nvim, Catppuccin, Telescope).
-* `dot_config/iterm2/`: iTerm2 preferences plist.
-* `dot_claude/`: Claude Code global instructions, skills, and config.
-* `dot_local/bin/executable_ralph`: Autonomous Claude loop script.
-* `Library/LaunchAgents/`: Caps Lock → Control key remapping via `hidutil`.
-* `run_onchange_install-packages.sh`: Watches `Brewfile` and runs `brew bundle`.
-* `run_once_*.sh`: One-time setup scripts (zsh plugins, TPM, macOS defaults, key remapping).
+macOS-only scripts (`set_macos_defaults.sh`, `activate_key_remapping.sh`) exit early on Linux. The `bash_profile` auto-detects Meta devvms and sets the GitHub proxy.
