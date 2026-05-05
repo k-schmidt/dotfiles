@@ -6,4 +6,6 @@ elif [[ -d /home/linuxbrew/.linuxbrew/opt/fzf/bin ]] && [[ ! "$PATH" == */home/l
   PATH="${PATH:+${PATH}:}/home/linuxbrew/.linuxbrew/opt/fzf/bin"
 fi
 
-source <(fzf --zsh)
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi

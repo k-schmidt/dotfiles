@@ -6,4 +6,6 @@ elif [[ -d /home/linuxbrew/.linuxbrew/opt/fzf/bin ]] && [[ ! "$PATH" == */home/l
   PATH="${PATH:+${PATH}:}/home/linuxbrew/.linuxbrew/opt/fzf/bin"
 fi
 
-eval "$(fzf --bash)"
+if command -v fzf >/dev/null 2>&1; then
+  eval "$(fzf --bash)"
+fi
