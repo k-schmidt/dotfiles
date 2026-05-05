@@ -1,9 +1,58 @@
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# Sensible history settings
+########## PATH & ENVIRONMENT ##########
+
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
+
+export EDITOR="code --wait"
+export VISUAL="code --wait"
+
+########## HISTORY ##########
+
 export HISTCONTROL=ignoredups:erasedups
+export HISTSIZE=50000
+export HISTFILESIZE=50000
 shopt -s histappend
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
-# Nice prompt
+########## ALIASES ##########
+
+# Navigation
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -1'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# Git
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+
+# tmux
+alias t="tmux"
+alias ta="tmux attach -t"
+alias tn="tmux new -s"
+alias tl="tmux ls"
+alias tk="tmux kill-session -t"
+
+# neovim
+alias v="nvim"
+alias vi="nvim"
+alias vim="nvim"
+
+# Claude Code
+alias cc='claude --dangerously-skip-permissions'
+
+########## PROMPT ##########
+
 PS1='\u@\h:\w\$ '
+
+########## TOOL INIT ##########
+
+# Zoxide (smarter cd)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init bash)"
+fi
