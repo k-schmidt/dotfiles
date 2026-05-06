@@ -87,7 +87,8 @@
     "gdrive-mount@claude-templates": true,
     "meta-cli-core@claude-templates": true,
     "10x-engineer@claude-templates": true,
-    "meta-statusline-pro@claude-templates": true
+    "meta-statusline-pro@claude-templates": true,
+    "browser@agent-market": true
   },
   "extraKnownMarketplaces": {
     "claude-templates": {
