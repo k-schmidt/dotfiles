@@ -1,8 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  },
   "env": {
     "DISABLE_AUTOUPDATER": "1"
   },
@@ -79,26 +75,27 @@
     ]
   },
   "model": "claude-opus-4-6[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "browser@claude-templates": true,
     "data@claude-templates": true,
     "datamate@claude-templates": true,
     "debrief@claude-templates": true,
     "gdrive-mount@claude-templates": true,
-    "para-workspace-core@claude-templates": true,
-    "para-workspace-gdrive@claude-templates": true,
-    "para-workspace-integrations@claude-templates": true,
-    "para-workspace-meetings@claude-templates": true,
-    "para-workspace-reporting@claude-templates": true,
-    "para-workspace@claude-templates": true
+    "meta-cli-core@claude-templates": true,
+    "10x-engineer@claude-templates": true,
+    "meta-statusline-pro@claude-templates": true
   },
-  "skipDangerousModePermissionPrompt": true,
   "extraKnownMarketplaces": {
-    "agent-market": {
+    "claude-templates": {
       "source": {
         "source": "directory",
-        "path": "/Users/kyleschmidt/.claude/agent-market"
+        "path": "/usr/local/claude-templates-cli/components"
       }
     }
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }
