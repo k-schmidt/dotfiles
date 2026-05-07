@@ -51,7 +51,7 @@ Iterate until the user approves the breakdown.
 
 Detect the issue tracker:
 
-- If inside Meta's codebase (`.arcconfig` exists at repo root, or working directory is under `fbsource` / `fbcode`) → use the `/tasks` skill to create GSD tasks via `meta tasks.task create`
+- If inside Meta's codebase → use the `/tasks` skill to create GSD tasks via `meta tasks.task create`
 - If `.github/` exists or `git remote -v` points to GitHub → use `gh issue create`
 - Otherwise → write issues as local markdown files under `specs/issues/` (one file per slice)
 - The user can override by stating their preference
