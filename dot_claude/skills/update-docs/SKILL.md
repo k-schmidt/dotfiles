@@ -1,6 +1,6 @@
 ---
 name: update-docs
-description: Reconcile code changes against project documentation (CONTEXT.md, ADRs, CLAUDE.md). Surfaces divergences, interviews the user to classify each as a doc update, a code bug, or something needing deeper design discussion. Use after implementation work to catch documentation drift.
+description: Reconcile code changes against all project documentation under docs/ and CLAUDE.md. Surfaces divergences, interviews the user to classify each as a doc update, a code bug, or something needing deeper design discussion. Use after implementation work to catch documentation drift.
 ---
 
 Reconcile what the code does with what the docs say. Surface divergences one at a time, and resolve each before moving on.
@@ -21,8 +21,7 @@ Build a list of **what was added, modified, or removed** — focus on domain con
 
 Load the documented state:
 
-- `docs/CONTEXT.md` (or `docs/CONTEXT-MAP.md` → per-context docs)
-- `docs/adr/*.md`
+- All files under `docs/` — including `CONTEXT.md`, `adr/*.md`, guides, and any other documentation. Do NOT modify files under `specs/` — that directory is an append-only log of decisions and changes.
 - `.claude/CLAUDE.md` (project-level instructions)
 
 If none of these exist, say so and ask if the user wants to bootstrap them (suggest `/grill-with-docs` for that).
