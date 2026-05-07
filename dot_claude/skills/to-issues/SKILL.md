@@ -81,4 +81,14 @@ Or "None - can start immediately" if no blockers.
 
 </issue-template>
 
-Do NOT close or modify any parent issue or PRD.
+Do NOT close or modify any parent issue or PRD — except to append the tracking table below.
+
+### 6. Update the PRD
+
+If the issues were created to address a PRD, append a tracking table to the end of the PRD:
+
+| Issue | Description | Type | Blocked by |
+|-------|-------------|------|------------|
+| Link or ID | One-line summary | HITL / AFK | Link(s) or "None" |
+
+One row per slice, in dependency order (blockers first).
