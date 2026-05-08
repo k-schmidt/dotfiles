@@ -79,6 +79,11 @@ A concise description of this vertical slice. Describe the end-to-end behavior, 
 
 Or "None - can start immediately" if no blockers.
 
+## When done
+
+- Close this issue
+- Update the PRD tracking table to reflect completion
+
 </issue-template>
 
 Do NOT close or modify any parent issue or PRD — except to append the tracking table below.
