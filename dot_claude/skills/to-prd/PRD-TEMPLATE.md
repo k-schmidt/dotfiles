@@ -14,6 +14,12 @@ The problem that the user is facing, from the user's perspective.
 
 The solution to the problem, from the user's perspective.
 
+## Success Criteria
+
+- {Measurable outcome 1}
+- {Measurable outcome 2}
+- {Measurable outcome 3}
+
 ## User Stories
 
 A LONG, numbered list of user stories. Each user story should be in the format of:
@@ -58,3 +64,4 @@ Any further notes about the feature.
 - User stories should be extensive. Cover the happy path, edge cases, error states, and administrative flows.
 - Technical decisions should capture the "why" behind choices, not just the "what."
 - Out of scope is mandatory. If nothing is excluded, the scope is too vague.
+- Be concrete. "Improve performance" is not a success criterion. "P95 latency under 200ms for queries with <1000 results" is.

@@ -21,6 +21,14 @@ This skill takes the current conversation context and codebase understanding and
 
 5. Write the PRD to `specs/PRD-{feature-name}.md` in the current project. Create the `specs/` directory if it doesn't exist.
 
-6. After writing, tell the user:
+6. **If inside Meta's codebase**, also create a GSD parent task:
+   - Title: `PRD: {feature-name}`
+   - Description: The full PRD content (markdown)
+   - Tags: `prd`, `dependentClose`
+   - Use the `/tasks` skill to create the task
+   - The `dependentClose` tag means this task will auto-close when all sub-tasks close
+
+7. After writing, tell the user:
    - The file path of the PRD
-   - Suggest next step: run `/to-issues` to break it into vertical-slice implementation tasks, or hand off directly with: `claude "Read specs/PRD-{name}.md and implement it."`
+   - The GSD task number and link (if created)
+   - Suggest next step: run `/to-issues` to break it into vertical-slice implementation tasks (which will be nested under the GSD parent task if one was created)
