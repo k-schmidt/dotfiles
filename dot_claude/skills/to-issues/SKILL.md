@@ -27,6 +27,10 @@ Slices may be 'HITL' or 'AFK'. HITL slices require human interaction, such as an
 - Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests)
 - A completed slice is demoable or verifiable on its own
 - Prefer many thin slices over few thick ones
+- Vertical over horizontal:
+  - ❌ "Write all migrations" → "Write all handlers" → "Write all tests"
+  - ✅ "Implement user creation (migration + handler + test)" → "Implement user deletion (migration + handler + test)"
+- Minimize dependencies — prefer task graphs with maximum parallelism. If two tasks only share a file, not a logical dependency, restructure so they can run in parallel.
 </vertical-slice-rules>
 
 ### 4. Quiz the user
@@ -51,7 +55,7 @@ Iterate until the user approves the breakdown.
 
 Detect the issue tracker:
 
-- If inside Meta's codebase → use the `/tasks` skill to create GSD tasks via `meta tasks.task create`. If a GSD parent task exists for the PRD (created by `/to-prd`), nest each issue as a sub-task under it.
+- If inside Meta's codebase → use the `/tasks` skill to create GSD tasks via `meta tasks.task create`. Tag each task with `commitClose` (auto-closes when attached diffs land). If a GSD parent task exists for the PRD (created by `/to-prd`), nest each issue as a sub-task under it.
 - If `.github/` exists or `git remote -v` points to GitHub → use `gh issue create`
 - Otherwise → write issues as local markdown files under `specs/issues/` (one file per slice)
 - The user can override by stating their preference
@@ -66,6 +70,10 @@ A reference to the parent PRD or issue (if applicable).
 ## What to build
 
 A concise description of this vertical slice. Describe the end-to-end behavior, not layer-by-layer implementation.
+
+## Why
+
+Brief context — why this task exists and what it enables.
 
 ## Acceptance criteria
 
