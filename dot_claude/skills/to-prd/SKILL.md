@@ -24,9 +24,9 @@ This skill takes the current conversation context and codebase understanding and
 6. **If inside Meta's codebase**, also create a GSD parent task:
    - Title: `PRD: {feature-name}`
    - Description: The full PRD content (markdown)
-   - Tags: `prd`, `dependentClose`
+   - Tags: `prd`, `commitClose`
    - Use the `/tasks` skill to create the task
-   - The `dependentClose` tag means this task will auto-close when all sub-tasks close
+   - The `commitClose` tag means this task will auto-close when the attached diff lands
 
 7. After writing, tell the user:
    - The file path of the PRD
