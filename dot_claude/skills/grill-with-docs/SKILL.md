@@ -87,4 +87,8 @@ Only offer to create an ADR when all three are true:
 
 If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
 
+### Wrap up
+
+When the grilling is complete, offer to hand off to `/to-prd` to capture the refined plan as a PRD. Do not offer to implement any changes.
+
 </supporting-info>

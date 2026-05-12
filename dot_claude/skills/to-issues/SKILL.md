@@ -105,3 +105,7 @@ If the issues were created to address a PRD, append a tracking table to the end 
 | Link or ID | One-line summary | HITL / AFK | Link(s) or "None" |
 
 One row per slice, in dependency order (blockers first).
+
+### 7. Offer to start development
+
+After publishing issues, offer to begin implementation. If the user agrees, start with AFK slices that have no blockers, working through them in dependency order.
