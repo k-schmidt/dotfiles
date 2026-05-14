@@ -55,7 +55,7 @@ Iterate until the user approves the breakdown.
 
 Detect the issue tracker:
 
-- If inside Meta's codebase → use the `/tasks` skill to create GSD tasks via `meta tasks.task create`. If a GSD parent task exists for the PRD (created by `/to-prd`), nest each issue as a sub-task under it. The PRD parent task should have `commitClose` — the single diff for the PRD closes it when it lands. Individual sub-tasks are closed as they are implemented within the diff, and comments should be added to tasks if they are blocked or have open questions.
+- If inside Meta's codebase → use the `/tasks` skill to create GSD tasks via `meta tasks.task create` with `--owner=kyleschmidt`. If a GSD parent task exists for the PRD (created by `/to-prd`), nest each issue as a sub-task under it. The PRD parent task has `commitClose` and `closeDependents` — when the attached diff lands, it closes the parent, and `closeDependents` cascades the close to all child tasks. Add comments to tasks if they are blocked or have open questions.
 - If `.github/` exists or `git remote -v` points to GitHub → use `gh issue create`
 - Otherwise → write issues as local markdown files under `specs/issues/` (one file per slice)
 - The user can override by stating their preference
