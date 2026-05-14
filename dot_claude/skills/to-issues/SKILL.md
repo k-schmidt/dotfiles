@@ -5,7 +5,7 @@ description: Break a plan, spec, or PRD into independently-grabbable issues usin
 
 # To Issues
 
-Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
+Break a plan into independently-grabbable issues using vertical slices (tracer bullets). Never use the AskUserQuestion tool.
 
 ## Process
 

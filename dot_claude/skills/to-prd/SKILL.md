@@ -3,7 +3,7 @@ name: to-prd
 description: Turn the current conversation context into a file-based PRD. Use when user wants to create a PRD from the current context, write a spec, or document requirements for handoff.
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a PRD. Do NOT interview the user — just synthesize what you already know.
+This skill takes the current conversation context and codebase understanding and produces a PRD. Do NOT interview the user — just synthesize what you already know. Never use the AskUserQuestion tool.
 
 ## Process
 
