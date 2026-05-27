@@ -71,7 +71,8 @@
       "Bash(jq *)",
       "Bash(mclone *)",
       "Bash(realpath *)",
-      "Bash(meta *)"
+      "Bash(meta *)",
+      "Bash(bash *source-sevs.sh*)"
     ]
   },
   "model": "claude-opus-4-6[1m]",
@@ -80,22 +81,32 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "browser@claude-templates": true,
-    "data@claude-templates": true,
-    "datamate@claude-templates": true,
-    "debrief@claude-templates": true,
-    "gdrive-mount@claude-templates": true,
-    "meta-cli-core@claude-templates": true,
-    "10x-engineer@claude-templates": true,
-    "meta-statusline-pro@claude-templates": true,
+    "debrief@agent-market": true,
+    "gdrive-mount@agent-market": true,
+    "para-workspace@agent-market": true,
+    "datamate@agent-market": true,
+    "data@agent-market": true,
     "browser@agent-market": true,
-    "source-control-at-meta@agent-market": true
+    "agent-security-guardrails@agent-market": true,
+    "source-control-at-meta@agent-market": true,
+    "test-runner@agent-market": true,
+    "trajectory@agent-market": true,
+    "team-capacity-org@agent-market": true,
+    "team-change-mgmt-sme@agent-market": true,
+    "meta-cli-core@agent-market": true,
+    "meta@agent-market": true,
+    "llm-rules@agent-market": true,
+    "gojira-session@agent-market": true,
+    "meta_codesearch@agent-market": true,
+    "privacylib@agent-market": true,
+    "code_provenance@agent-market": true,
+    "sl@agent-market": true
   },
   "extraKnownMarketplaces": {
-    "claude-templates": {
+    "agent-market": {
       "source": {
         "source": "directory",
-        "path": "/usr/local/claude-templates-cli/components"
+        "path": "/Users/kyleschmidt/.claude/agent-market"
       }
     }
   },
