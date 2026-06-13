@@ -75,7 +75,7 @@
       "Bash(bash *source-sevs.sh*)"
     ]
   },
-  "model": "claude-opus-4-6[1m]",
+  "model": "claude-opus-4-8",
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
