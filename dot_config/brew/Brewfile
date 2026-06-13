@@ -20,6 +20,7 @@ cask "obsidian"
 cask "ollama-app"
 cask "todoist-app"
 cask "iterm2"
+cask "cmux"
 cask "keepingyouawake"
 
 # Fonts
