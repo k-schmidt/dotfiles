@@ -1,7 +1,4 @@
 {
-  "env": {
-    "DISABLE_AUTOUPDATER": "1"
-  },
   "permissions": {
     "allow": [
       "Bash(bash *source-all.sh*)",
