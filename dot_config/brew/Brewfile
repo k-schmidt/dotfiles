@@ -1,3 +1,6 @@
+# Taps
+tap "nikitabobko/tap"
+
 # Core Engineering
 brew "git"
 brew "gh"
@@ -22,6 +25,7 @@ cask "todoist-app"
 cask "iterm2"
 cask "cmux"
 cask "keepingyouawake"
+cask "aerospace"
 
 # Fonts
 cask "font-jetbrains-mono-nerd-font"
