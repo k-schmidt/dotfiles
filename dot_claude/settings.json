@@ -1,4 +1,10 @@
 {
+  "env": {
+    "DISABLE_AUTOUPDATER": "1",
+    "META_CLAUDE_CODE_RELEASE": "latest",
+    "CLAUDE_CODE_VERSION_OVERRIDE": "latest",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(bash *source-all.sh*)",
@@ -69,10 +75,29 @@
       "Bash(mclone *)",
       "Bash(realpath *)",
       "Bash(meta *)",
-      "Bash(bash *source-sevs.sh*)"
+      "Bash(bash *source-sevs.sh*)",
+      "Bash(fbpython *finalize_digest.py*)",
+      "Bash(fbpython *debrief_lib/telemetry.py*)",
+      "Bash(fbpython *write_metrics.py*)",
+      "Bash(python3 *sanitize_leave_types.py*)",
+      "Bash(fbpython *persist_sources.py*)",
+      "Bash(fbpython *count_gchat.py*)",
+      "Bash(fbpython *chunk_gchat.py*)",
+      "Bash(fbpython *merge_annotated_gchat.py*)",
+      "Bash(fbpython *check_team_brain_config.py*)",
+      "Bash(fbpython *resolve_gdrive_url.py*)",
+      "Bash(fbpython *extract_gsd_projects.py*)",
+      "Bash(python3 *format_gchat_message.py*)",
+      "Bash(fbpython *check_sources_freshness.py*)",
+      "Bash(fbpython *claude_md_rollback.py*)",
+      "Bash(fbpython *source-bento.py*)",
+      "Bash(fbpython *source-calendar.py*)",
+      "Bash(fbpython *source-flows.py*)",
+      "Bash(fbpython *source-meeting-notes.py*)",
+      "Bash(fbpython *check_low_delta.py*)"
     ]
   },
-  "model": "opus",
+  "model": "claude-opus-5[1m]",
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
@@ -84,9 +109,20 @@
     "datamate@agent-market": true,
     "data@agent-market": true,
     "browser@agent-market": true,
-    "agent-security-guardrails@agent-market": true,
     "source-control-at-meta@agent-market": true,
     "test-runner@agent-market": true,
+    "reviewmate@agent-market": true,
+    "easy-diff@agent-market": true,
+    "plan-sync@agent-market": true,
+    "10x-engineer@agent-market": true,
+    "figma-mcp-server-guide@agent-market": true,
+    "design@agent-market": true,
+    "lineagemate@agent-market": true,
+    "transwarp@agent-market": true,
+    "vscode-commands@agent-market": true,
+    "brain@agent-market": true,
+    "scheduler@agent-market": true,
+    "agent-security-guardrails@agent-market": true,
     "trajectory@agent-market": true,
     "team-capacity-org@agent-market": true,
     "team-change-mgmt-sme@agent-market": true,
