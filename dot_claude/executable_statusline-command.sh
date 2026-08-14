@@ -13,32 +13,35 @@ dir_name=$(basename "$cwd")
 sep=$''
 thin=$''
 
-# ANSI colors
 reset=$'\033[0m'
 bold=$'\033[1m'
 
-# Segment colors (bg;fg pairs)
-dir_bg=$'\033[44m'       # blue bg
-dir_fg=$'\033[97m'       # white fg
-dir_sep_fg=$'\033[34m'   # blue fg (for separator after blue bg)
+# Catppuccin Mocha as 24-bit colour.
+#
+# The ANSI 16-colour palette cannot be used here: Catppuccin remaps every ANSI
+# colour to a light pastel, so the old "bright white on blue" rendered at a
+# 1.06:1 contrast ratio, and white-on-magenta and white-on-red were no better
+# (1.46:1 and 1.04:1). Pinning the values means the bar no longer depends on
+# whatever the terminal palette happens to be.
+#
+# Every segment now puts crust on its pastel, which lands between 8:1 and 15:1.
+fg_dark=$'\033[38;2;17;17;27m'                                        # crust   #11111b
 
-git_bg=$'\033[42m'       # green bg
-git_fg=$'\033[30m'       # black fg
-git_sep_fg=$'\033[32m'   # green fg
-git_dirty_bg=$'\033[43m' # yellow bg
-git_dirty_fg=$'\033[30m' # black fg
-git_dirty_sep_fg=$'\033[33m' # yellow fg
+blue_bg=$'\033[48;2;137;180;250m';    blue_fg=$'\033[38;2;137;180;250m'    # #89b4fa
+green_bg=$'\033[48;2;166;227;161m';   green_fg=$'\033[38;2;166;227;161m'   # #a6e3a1
+yellow_bg=$'\033[48;2;249;226;175m';  yellow_fg=$'\033[38;2;249;226;175m'  # #f9e2af
+red_bg=$'\033[48;2;243;139;168m';     red_fg=$'\033[38;2;243;139;168m'     # #f38ba8
+mauve_bg=$'\033[48;2;203;166;247m';   mauve_fg=$'\033[38;2;203;166;247m'   # #cba6f7
+teal_bg=$'\033[48;2;148;226;213m';    teal_fg=$'\033[38;2;148;226;213m'    # #94e2d5
 
-ctx_bg=$'\033[46m'       # cyan bg
-ctx_fg=$'\033[30m'       # black fg
-ctx_sep_fg=$'\033[36m'   # cyan fg
-ctx_warn_bg=$'\033[41m'  # red bg
-ctx_warn_fg=$'\033[97m'  # white fg
-ctx_warn_sep_fg=$'\033[31m' # red fg
-
-session_bg=$'\033[45m'   # magenta bg
-session_fg=$'\033[97m'   # white fg
-session_sep_fg=$'\033[35m' # magenta fg
+# Segment colours. sep_fg carries the segment's own colour into the next
+# segment's background, which is what draws the powerline arrow.
+dir_bg=$blue_bg;         dir_fg=$fg_dark;        dir_sep_fg=$blue_fg
+git_bg=$green_bg;        git_fg=$fg_dark;        git_sep_fg=$green_fg
+git_dirty_bg=$yellow_bg; git_dirty_fg=$fg_dark;  git_dirty_sep_fg=$yellow_fg
+ctx_bg=$teal_bg;         ctx_fg=$fg_dark;        ctx_sep_fg=$teal_fg
+ctx_warn_bg=$red_bg;     ctx_warn_fg=$fg_dark;   ctx_warn_sep_fg=$red_fg
+session_bg=$mauve_bg;    session_fg=$fg_dark;    session_sep_fg=$mauve_fg
 
 out=""
 
