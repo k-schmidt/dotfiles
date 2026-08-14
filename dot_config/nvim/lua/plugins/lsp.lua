@@ -1,3 +1,18 @@
+-- Single source of truth: mason installs these, mason-lspconfig enables them.
+local servers = {
+  "pyright",
+  "ts_ls",
+  "lua_ls",
+  "gopls",
+  "rust_analyzer",
+  "bashls",
+  "dockerls",
+  "docker_compose_language_service",
+  "yamlls",
+  "jsonls",
+  "sqlls",
+}
+
 return {
   {
     "williamboman/mason.nvim",
@@ -8,19 +23,9 @@ return {
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim" },
     opts = {
-      ensure_installed = {
-        "pyright",
-        "ts_ls",
-        "lua_ls",
-        "gopls",
-        "rust_analyzer",
-        "bashls",
-        "dockerls",
-        "docker_compose_language_service",
-        "yamlls",
-        "jsonls",
-        "sqlls",
-      },
+      ensure_installed = servers,
+      -- automatic_enable defaults to true: calls vim.lsp.enable() for each
+      -- installed server, so no explicit enable list is needed.
     },
   },
   {
@@ -59,21 +64,6 @@ return {
             diagnostics = { globals = { "vim" } },
           },
         },
-      })
-
-      -- Enable all servers
-      vim.lsp.enable({
-        "pyright",
-        "ts_ls",
-        "lua_ls",
-        "gopls",
-        "rust_analyzer",
-        "bashls",
-        "dockerls",
-        "docker_compose_language_service",
-        "yamlls",
-        "jsonls",
-        "sqlls",
       })
     end,
   },

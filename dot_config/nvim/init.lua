@@ -2,7 +2,7 @@
 
 -- 1. Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -21,10 +21,7 @@ vim.g.maplocalleader = " "
 -- 3. Load Plugins from lua/plugins directory
 require("lazy").setup("plugins")
 
--- 4. Apply the Colorscheme
-vim.cmd.colorscheme "catppuccin"
-
--- 5. Basic Options (Keep your existing settings here)
+-- 4. Basic Options (Keep your existing settings here)
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.clipboard = "unnamedplus"

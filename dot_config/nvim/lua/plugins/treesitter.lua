@@ -33,6 +33,16 @@ return {
       if #to_install > 0 then
         require("nvim-treesitter").install(to_install)
       end
+
+      -- nvim-treesitter (main) does not enable highlighting itself, and Neovim
+      -- only auto-starts it for its own bundled parsers. Start it per buffer;
+      -- pcall covers filetypes with no installed parser.
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("UserTreesitterStart", {}),
+        callback = function(ev)
+          pcall(vim.treesitter.start, ev.buf)
+        end,
+      })
     end,
   },
 }

@@ -1,7 +1,6 @@
 return {
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.5',
     dependencies = { 'nvim-lua/plenary.nvim' },
     keys = {
       -- Lazy loads telescope when these keys are pressed

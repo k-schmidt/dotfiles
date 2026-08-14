@@ -9,6 +9,7 @@ brew "fzf"
 brew "zoxide"
 brew "tmux"
 brew "neovim"
+brew "tree-sitter-cli" # required by nvim-treesitter (main) to build parsers
 brew "volta"
 
 # Applications (Casks)
