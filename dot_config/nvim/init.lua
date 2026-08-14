@@ -25,3 +25,29 @@ require("lazy").setup("plugins")
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.clipboard = "unnamedplus"
+
+-- 5. Mirror lazy-lock.json back into the chezmoi source dir
+-- lazy rewrites the lockfile on any operation that moves plugin commits, but
+-- only in the target tree, so pins silently drift from what is in git.
+-- Note: lazy fires these events *before* it writes the lockfile (both are
+-- callbacks on the same runner "done" emitter, event first), so the sync must
+-- be deferred past the dispatch or it would capture the stale file.
+vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("ChezmoiLockSync", {}),
+  pattern = { "LazyInstall", "LazyUpdate", "LazyClean", "LazyRestore", "LazySync" },
+  callback = function()
+    if vim.fn.executable("chezmoi") == 0 then
+      return
+    end
+    vim.schedule(function()
+      local lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
+      vim.system({ "chezmoi", "add", lockfile }, { text = true }, function(res)
+        if res.code ~= 0 then
+          vim.schedule(function()
+            vim.notify("chezmoi add lazy-lock.json failed: " .. (res.stderr or ""), vim.log.levels.WARN)
+          end)
+        end
+      end)
+    end)
+  end,
+})
