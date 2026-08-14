@@ -11,6 +11,8 @@ brew "zoxide"
 brew "tmux"
 brew "neovim"
 brew "tree-sitter-cli" # required by nvim-treesitter (main) to build parsers
+brew "stylua"          # conform: lua formatter (no project-local equivalent)
+brew "shfmt"           # conform: shell formatter (no project-local equivalent)
 brew "volta"
 
 # Applications (Casks)

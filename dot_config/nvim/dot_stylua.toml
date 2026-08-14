@@ -1,0 +1,5 @@
+# stylua defaults to tabs; this config is 2-space throughout.
+column_width = 100
+indent_type = "Spaces"
+indent_width = 2
+quote_style = "AutoPreferDouble"

@@ -44,7 +44,10 @@ vim.api.nvim_create_autocmd("User", {
       vim.system({ "chezmoi", "add", lockfile }, { text = true }, function(res)
         if res.code ~= 0 then
           vim.schedule(function()
-            vim.notify("chezmoi add lazy-lock.json failed: " .. (res.stderr or ""), vim.log.levels.WARN)
+            vim.notify(
+              "chezmoi add lazy-lock.json failed: " .. (res.stderr or ""),
+              vim.log.levels.WARN
+            )
           end)
         end
       end)
