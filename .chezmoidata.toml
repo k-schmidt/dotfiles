@@ -4,5 +4,6 @@
     "@anthropic-ai/claude-code",
     "@openai/codex",
     "typescript",
-    "neovim"
+    "neovim",
+    "prettier"
   ]
