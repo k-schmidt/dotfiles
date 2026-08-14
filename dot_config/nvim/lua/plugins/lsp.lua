@@ -3,7 +3,8 @@ local servers = {
   "pyright",
   "ts_ls",
   "lua_ls",
-  "gopls",
+  -- gopls omitted: mason builds it with `go install` and there is no Go
+  -- toolchain here. Add brew "go" to the Brewfile before re-adding it.
   "rust_analyzer",
   "bashls",
   "dockerls",
