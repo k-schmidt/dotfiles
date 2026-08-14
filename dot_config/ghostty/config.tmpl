@@ -1,0 +1,43 @@
+# Ghostty configuration
+# Docs: https://ghostty.org/docs/config/reference
+# Reload in-place: cmd+shift+, (macOS) / ctrl+shift+, (Linux)
+
+# --- Font ---------------------------------------------------------------
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 14
+adjust-cell-height = 10%
+
+# --- Theme --------------------------------------------------------------
+# Follows the OS light/dark appearance.
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+
+# --- Window -------------------------------------------------------------
+window-padding-x = 12
+window-padding-y = 8
+window-padding-balance = true
+window-save-state = always
+window-inherit-working-directory = true
+
+# --- Cursor -------------------------------------------------------------
+cursor-style = block
+cursor-style-blink = false
+
+# --- Mouse & clipboard --------------------------------------------------
+mouse-hide-while-typing = true
+copy-on-select = clipboard
+clipboard-trim-trailing-spaces = true
+
+# --- Shell integration --------------------------------------------------
+# Auto-detected; features are opt-in per-item.
+shell-integration-features = cursor,sudo,title
+
+# --- Scrollback ---------------------------------------------------------
+# Bytes, not lines. Default is 10MB.
+scrollback-limit = 33554432
+{{ if eq .chezmoi.os "darwin" }}
+# --- macOS only ---------------------------------------------------------
+macos-titlebar-style = tabs
+macos-option-as-alt = true
+font-thicken = true
+quit-after-last-window-closed = false
+{{ end }}
