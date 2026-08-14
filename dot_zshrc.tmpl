@@ -76,6 +76,17 @@ alias ta="tmux attach -t"
 alias tn="tmux new -s"
 alias tl="tmux ls"
 alias tk="tmux kill-session -t"
+# Attach if the session exists, create it otherwise, so one command covers
+# both cases and ta/tn stop erroring depending on which state you are in.
+alias ts="tmux new -A -s"
+
+# chezmoi
+alias cza="chezmoi apply"
+alias czu="chezmoi update"
+alias cze="chezmoi edit"
+# `chezmoi cd` opens a subshell you have to exit; this just moves the current
+# shell to the source directory.
+czcd() { cd "$(chezmoi source-path)" || return; }
 
 # neovim
 alias v="nvim"
@@ -88,6 +99,11 @@ alias src='source ~/.zshrc'
 
 # SSH shortcuts
 alias macmini='ssh kyleschmidt@Kyles-Mac-mini.local'
+
+# Meta devserver. Guarded: `dev` only exists on the work laptop.
+if command -v dev >/dev/null 2>&1; then
+  alias dc="dev connect"
+fi
 
 ########## FINALIZATION ##########
 
