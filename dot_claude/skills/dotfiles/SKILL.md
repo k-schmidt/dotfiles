@@ -1,13 +1,11 @@
+---
+name: dotfiles
+description: Manage dotfiles with `chezmoi` — add local config files to the source repo, apply changes from the repo to the local system, and sync via Git. Use when the user says "save this config", "update my dotfiles", "sync my settings", "add [file] to chezmoi", or edits a config file they want tracked.
+---
+
 # Dotfile Manager (Chezmoi)
 
-## Description
 This skill helps the user manage their dotfiles using `chezmoi`. It automates adding configuration files, applying changes, and syncing the dotfile repository with Git.
-
-## Triggers
-- "Save this config"
-- "Update my dotfiles"
-- "Sync my settings"
-- "Add [file] to chezmoi"
 
 ## Procedure
 1. **Analyze Request:** Determine if the user wants to *add* a local file to chezmoi or *apply* changes from the repo to the local system.
