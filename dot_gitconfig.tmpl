@@ -1,0 +1,20 @@
+[core]
+	excludesfile = ~/.gitignore_global
+[user]
+    name = Kyle Schmidt
+    email = kyle.a.schmidt@gmail.com
+{{- $x509 := printf "/var/facebook/credentials/%s/x509/%s.pem" .chezmoi.username .chezmoi.username }}
+{{- if stat $x509 }}
+[http "https://git.internal.tfbnw.net"]
+	sslCert = {{ $x509 }}
+	sslKey = {{ $x509 }}
+[http "https://mononoke-git-lfs.internal.tfbnw.net"]
+	sslCert = {{ $x509 }}
+	sslKey = {{ $x509 }}
+[http "https://manifold.c2p.facebook.net"]
+	sslCert = {{ $x509 }}
+[http "https://github.com"]
+	proxy = https://fwdproxy:8082
+	proxySSLCert = {{ $x509 }}
+	proxySSLKey = {{ $x509 }}
+{{- end }}
