@@ -95,32 +95,47 @@ fi
 # installer. --skip-setup because zshrc already exports VOLTA_HOME and PATH.
 # This must succeed before the run_onchange_after_ volta script, which runs
 # later in the same apply and is currently a no-op without it.
+#
+# Fetched as a plain tarball rather than through get.volta.sh. The installer
+# runs its own curl, which cannot present the x509 client cert, so it fails
+# outright when the only route out is the mTLS proxy — which is exactly what
+# happened on the devserver while every net_fetch download succeeded.
 export VOLTA_HOME="$HOME/.volta"
 if [ -x "$VOLTA_HOME/bin/volta" ]; then
     echo "==> Using volta $("$VOLTA_HOME/bin/volta" --version 2>/dev/null)"
+elif [ "$(uname -m)" != "x86_64" ]; then
+    echo "==> Skipping volta on $(uname -m): only the x86_64 asset is verified"
+    FAILED+=("volta (unsupported arch)")
 elif ! net_resolve; then
     FAILED+=("volta (no network route)")
-elif [ -z "$NET_PROXY_URL" ] && [ -n "${NET_PROXY_ARGS[*]:-}" ]; then
-    # mTLS-only route: the installer runs its own curl and cannot be told to
-    # present a client cert through the environment.
-    echo "==> Skipping volta: installer cannot use the mTLS proxy"
-    FAILED+=("volta (mTLS proxy unsupported by installer)")
 else
-    echo "==> Installing volta"
-    TMP="$(mktemp -d)"
-    if net_fetch "https://get.volta.sh" "$TMP/volta.sh"; then
-        ( net_export_env; bash "$TMP/volta.sh" --skip-setup ) >/dev/null 2>&1
-        if [ -x "$VOLTA_HOME/bin/volta" ]; then
+    volta_tag="$(gh_latest_tag volta-cli/volta || true)"
+    if [ -z "$volta_tag" ]; then
+        echo "  FAILED volta (could not resolve the latest tag)"
+        FAILED+=("volta")
+    else
+        echo "==> Installing volta $volta_tag"
+        TMP="$(mktemp -d)"
+        volta_url="https://github.com/volta-cli/volta/releases/download/${volta_tag}/volta-${volta_tag#v}-linux.tar.gz"
+        if net_fetch "$volta_url" "$TMP/volta.tar.gz" \
+           && tar -xzf "$TMP/volta.tar.gz" -C "$TMP" \
+           && [ -f "$TMP/volta" ]; then
+            mkdir -p "$VOLTA_HOME/bin"
+            for b in volta volta-shim volta-migrate; do
+                [ -f "$TMP/$b" ] && install -m 0755 "$TMP/$b" "$VOLTA_HOME/bin/$b"
+            done
+            # `volta setup` builds the ~/.volta layout and shims. It also wants
+            # to append VOLTA_HOME to a shell profile; zshrc already exports it,
+            # and chezmoi restores that file on the next apply, so any line it
+            # adds is redundant rather than harmful.
+            "$VOLTA_HOME/bin/volta" setup >/dev/null 2>&1
             echo "  Installed volta $("$VOLTA_HOME/bin/volta" --version 2>/dev/null)"
         else
-            echo "  FAILED volta installer did not produce a binary"
+            echo "  FAILED volta from $volta_url"
             FAILED+=("volta")
         fi
-    else
-        echo "  FAILED to fetch the volta installer"
-        FAILED+=("volta")
+        rm -rf "$TMP"
     fi
-    rm -rf "$TMP"
 fi
 
 # --- upstream release binaries ----------------------------------------------
