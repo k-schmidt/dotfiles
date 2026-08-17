@@ -14,19 +14,31 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- 2. Leader Key (Must be set BEFORE loading lazy)
+-- 2. Volta shims on PATH
+-- On the work devserver /usr/local/bin/npm is a stub that refuses every
+-- install ("use mgt cli"), so Mason's npm-backed servers fail unless Volta's
+-- shims resolve first. nvim inherits PATH from whatever launched it, which is
+-- not always a shell that sourced zshrc, so pin it here as well. Only
+-- prepended when absent, which keeps the shell's own ordering (Homebrew >
+-- Volta > system) intact whenever it already set things up.
+local volta_bin = vim.env.HOME .. "/.volta/bin"
+if vim.uv.fs_stat(volta_bin) and not string.find(vim.env.PATH, volta_bin, 1, true) then
+  vim.env.PATH = volta_bin .. ":" .. vim.env.PATH
+end
+
+-- 3. Leader Key (Must be set BEFORE loading lazy)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- 3. Load Plugins from lua/plugins directory
+-- 4. Load Plugins from lua/plugins directory
 require("lazy").setup("plugins")
 
--- 4. Basic Options (Keep your existing settings here)
+-- 5. Basic Options (Keep your existing settings here)
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.clipboard = "unnamedplus"
 
--- 5. Mirror lazy-lock.json back into the chezmoi source dir
+-- 6. Mirror lazy-lock.json back into the chezmoi source dir
 -- lazy rewrites the lockfile on any operation that moves plugin commits, but
 -- only in the target tree, so pins silently drift from what is in git.
 -- Note: lazy fires these events *before* it writes the lockfile (both are
