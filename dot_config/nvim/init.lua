@@ -38,6 +38,32 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.clipboard = "unnamedplus"
 
+-- Clipboard provider on a headless box.
+-- With no X display "unnamedplus" has nothing to write to. Neovim does fall
+-- back to OSC 52, but only when $SSH_TTY is set -- and tmux's default
+-- update-environment list omits SSH_TTY, so inside a pane the detection misses
+-- and every yank silently goes nowhere. Pin the provider instead of relying on
+-- it. tmux forwards the escape onward via `set -g set-clipboard on`.
+-- macOS is left alone: it has a real pbcopy provider.
+if
+  vim.uv.os_uname().sysname == "Linux"
+  and not vim.env.DISPLAY
+  and not vim.env.WAYLAND_DISPLAY
+then
+  local osc52 = require("vim.ui.clipboard.osc52")
+  -- Read back from the unnamed register rather than querying the terminal.
+  -- An OSC 52 paste blocks waiting for a reply that most terminals refuse to
+  -- send by default, which would hang `p` instead of just pasting the yank.
+  local function paste()
+    return { vim.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+  end
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+    paste = { ["+"] = paste, ["*"] = paste },
+  }
+end
+
 -- 6. Mirror lazy-lock.json back into the chezmoi source dir
 -- lazy rewrites the lockfile on any operation that moves plugin commits, but
 -- only in the target tree, so pins silently drift from what is in git.

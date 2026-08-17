@@ -3,12 +3,9 @@
 # run_onchange_after_install-volta-packages.sh.tmpl
 
 {{- $volta := .packages.volta.common -}}
-{{- if eq .chezmoi.os "darwin" -}}
-{{-   $volta = concat $volta .packages.volta.darwin -}}
-{{- end }}
 
-# This hash comment forces the script to re-run whenever the resolved package
-# list changes. It is per-OS, so macOS and Linux re-run independently:
+# This hash comment forces the script to re-run whenever the package list
+# changes:
 # packages: {{ $volta | quote }}
 
 # No `-e`: one unavailable package must not abort the run or the wider apply.

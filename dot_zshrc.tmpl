@@ -120,8 +120,19 @@ fi
 ########## FINALIZATION ##########
 
 # FZF setup
+# `fzf --zsh` only exists from 0.48 onward. The dnf build on the devserver
+# predates it, and an unguarded call prints "unknown option" on every prompt,
+# so fall back to the shell scripts the older package ships separately.
 if command -v fzf >/dev/null 2>&1; then
-  source <(fzf --zsh)
+  if _fzf_init="$(fzf --zsh 2>/dev/null)"; then
+    source <(print -r -- "$_fzf_init")
+  else
+    for _fzf_f in /usr/share/fzf/shell/key-bindings.zsh \
+                  /usr/share/fzf/shell/completion.zsh; do
+      [[ -r $_fzf_f ]] && source "$_fzf_f"
+    done
+  fi
+  unset _fzf_init _fzf_f
 fi
 
 # Zoxide (smarter cd)

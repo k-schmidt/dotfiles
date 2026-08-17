@@ -124,11 +124,26 @@ else
             for b in volta volta-shim volta-migrate; do
                 [ -f "$TMP/$b" ] && install -m 0755 "$TMP/$b" "$VOLTA_HOME/bin/$b"
             done
-            # `volta setup` builds the ~/.volta layout and shims. It also wants
-            # to append VOLTA_HOME to a shell profile; zshrc already exports it,
-            # and chezmoi restores that file on the next apply, so any line it
-            # adds is redundant rather than harmful.
+            # `volta setup` builds the ~/.volta layout and shims, but it also
+            # appends VOLTA_HOME lines to whichever shell profile matches
+            # $SHELL. Those files are chezmoi-managed, and chezmoi refuses to
+            # touch a target that changed since it last wrote it -- so an
+            # unguarded setup poisons every later `chezmoi apply` with
+            # "has changed since chezmoi last wrote it". zshrc and bashrc
+            # already export VOLTA_HOME, so the appended lines buy nothing.
+            # Snapshot, let setup run, put the originals back.
+            VOLTA_GUARD="$(mktemp -d)"
+            for p in .zshrc .bashrc .bash_profile; do
+                [ -f "$HOME/$p" ] && cp -p "$HOME/$p" "$VOLTA_GUARD/$p"
+            done
             "$VOLTA_HOME/bin/volta" setup >/dev/null 2>&1
+            for p in .zshrc .bashrc .bash_profile; do
+                [ -f "$VOLTA_GUARD/$p" ] || continue
+                cmp -s "$VOLTA_GUARD/$p" "$HOME/$p" && continue
+                cp -p "$VOLTA_GUARD/$p" "$HOME/$p"
+                echo "  Reverted volta setup's edit to ~/$p (chezmoi owns it)"
+            done
+            rm -rf "$VOLTA_GUARD"
             echo "  Installed volta $("$VOLTA_HOME/bin/volta" --version 2>/dev/null)"
         else
             echo "  FAILED volta from $volta_url"

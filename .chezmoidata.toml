@@ -1,18 +1,15 @@
-# Volta-managed Node tooling.
+# Volta-managed Node tooling. Identical on every machine.
 #
-# `common` installs on every machine. `darwin` adds the AI CLIs: on the Linux
-# devserver those are installed and updated centrally at /usr/local/bin, and a
-# Volta copy would shadow the managed one with a stale version.
+# claude-code and codex are deliberately absent. Both the devserver and the
+# work laptop carry a centrally managed copy at /usr/local/bin, and zshrc
+# aliases to it whenever it exists — so a Volta install would be downloaded and
+# kept up to date only to be shadowed by the alias on every invocation.
 [packages.volta]
   common = [
     "node",
     "typescript",
     "neovim",
     "prettier"
-  ]
-  darwin = [
-    "@anthropic-ai/claude-code",
-    "@openai/codex"
   ]
 
 # dnf packages for the Linux devserver. macOS covers the same ground through

@@ -1,0 +1,122 @@
+########## PATH & ENVIRONMENT ##########
+
+# Kept deliberately in step with dot_zshrc.tmpl. zsh is the interactive shell on
+# both machines, but bash still runs every `bash -lc`, every script that opens
+# an editor, and anything spawned by a tool that ignores $SHELL. When the two
+# files disagree, those paths silently get a different toolchain than the one
+# you are looking at.
+
+{{- if eq .chezmoi.os "darwin" }}
+# Homebrew paths (macOS)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+{{- end }}
+
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
+
+# Default editor. nvim on both platforms: `code --wait` hangs forever in a bare
+# SSH session on the devserver, where no VS Code instance is listening.
+export EDITOR="nvim"
+export VISUAL="nvim"
+{{- if eq .chezmoi.os "linux" }}
+
+# nvim 0.12 queries the terminal for its background color at startup and waits
+# 100ms for a DSR reply. Over SSH into the devserver that round trip misses the
+# window, so every launch prints E1568 and stalls. See dot_zshrc.tmpl.
+export NVIM_NOTTYFAST=1
+{{- end }}
+
+########## HISTORY ##########
+
+export HISTCONTROL=ignoredups:erasedups
+export HISTSIZE=50000
+export HISTFILESIZE=50000
+shopt -s histappend
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+########## ALIASES ##########
+
+# Navigation
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -1'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# Git
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+
+# tmux
+alias t="tmux"
+alias ta="tmux attach -t"
+alias tn="tmux new -s"
+alias tl="tmux ls"
+alias tk="tmux kill-session -t"
+# Attach if the session exists, create it otherwise, so one command covers
+# both cases and ta/tn stop erroring depending on which state you are in.
+alias ts="tmux new -A -s"
+
+# chezmoi
+alias cza="chezmoi apply"
+alias czu="chezmoi update"
+alias cze="chezmoi edit"
+# `chezmoi cd` opens a subshell you have to exit; this just moves the current
+# shell to the source directory.
+czcd() { cd "$(chezmoi source-path)" || return; }
+
+# Meta devserver. Guarded: `dev` only exists on the work laptop.
+if command -v dev >/dev/null 2>&1; then
+  alias dc="dev connect"
+fi
+
+# neovim
+alias v="nvim"
+alias vi="nvim"
+alias vim="nvim"
+
+# Claude Code
+alias cc='claude --dangerously-skip-permissions'
+
+########## PROMPT ##########
+
+PS1='\u@\h:\w\$ '
+
+########## FINALIZATION ##########
+
+# FZF. Sourced here rather than at the top of the file: ~/.fzf.bash probes for
+# the binary, and before the PATH block above ran it would miss an install in
+# ~/.local/bin and quietly no-op.
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Zoxide (smarter cd)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init bash)"
+fi
+
+# Volta (Node version manager). After the base PATH so its shims win over
+# /usr/local/bin, where the devserver keeps an npm wrapper that refuses every
+# install.
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+{{- if eq .chezmoi.os "darwin" }}
+# Ensure Homebrew takes priority over Volta
+if [[ -d /opt/homebrew/bin ]]; then
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+fi
+{{- end }}
+
+# Prefer the centrally managed CLIs over anything a package manager drops in
+if [[ -x /usr/local/bin/claude ]]; then
+  alias claude='/usr/local/bin/claude'
+fi
+if [[ -x /usr/local/bin/codex ]]; then
+  alias codex='/usr/local/bin/codex'
+fi
