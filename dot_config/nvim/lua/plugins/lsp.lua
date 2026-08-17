@@ -1,18 +1,34 @@
 -- Single source of truth: mason installs these, mason-lspconfig enables them.
 local servers = {
-  "pyright",
-  "ts_ls",
+  -- Python: pyrefly types, ruff lint/format. Both supersede pyright.
+  "pyrefly",
+  "ruff",
+  -- Web: tsgo is the native TypeScript server, superseding ts_ls.
+  "tsgo",
+  "eslint",
+  "tailwindcss",
   "lua_ls",
-  -- gopls omitted: mason builds it with `go install` and there is no Go
-  -- toolchain here. Add brew "go" to the Brewfile before re-adding it.
   "rust_analyzer",
   "bashls",
   "dockerls",
   "docker_compose_language_service",
   "yamlls",
   "jsonls",
-  "sqlls",
+  -- SQL: postgres_lsp for Postgres dialect, sqruff for lint/format.
+  -- sqlls omitted: sql-language-server v1.7.1 is unmaintained and crashes on
+  -- startup under any modern Node with ERR_PACKAGE_PATH_NOT_EXPORTED (it
+  -- reaches into a vscode-languageserver-protocol subpath that "exports" now
+  -- blocks). Its sqlite3 dep also needs a native build the proxy can't fetch.
+  "postgres_lsp",
+  "sqruff",
 }
+
+-- gopls is the one server mason builds with `go install`, so ask for it only
+-- where a Go toolchain exists. Without this guard a machine lacking Go retries
+-- a failing build on every startup instead of quietly going without.
+if vim.fn.executable("go") == 1 then
+  table.insert(servers, "gopls")
+end
 
 return {
   {
