@@ -18,13 +18,15 @@
 # dnf packages for the Linux devserver. macOS covers the same ground through
 # dot_config/brew/Brewfile.
 #
-# neovim is deliberately absent: the distro build is far older than this config
-# needs, so run_onchange_install-linux-packages.sh fetches the official tarball
-# into ~/.local instead.
+# Confirmed installable on the devserver. Absent on purpose:
+#   neovim  distro build predates what this config needs (0.10+)
+#   volta   not packaged
+#   direnv  not in base or EPEL; `dnf install` fails
+# All three are fetched from upstream releases into ~/.local by
+# run_onchange_install-linux-packages.sh instead.
 #
-# Not attempted here, as they are absent from the base and EPEL repos:
-# lazygit, difftastic, stylua, shfmt, uv. Install those on demand if you decide
-# you want them on the devserver.
+# Still unhandled, also missing from the repos: lazygit, difftastic, stylua,
+# shfmt, uv. Add them the same way if you end up wanting them here.
 [packages.dnf]
   linux = [
     "zsh",
@@ -34,6 +36,5 @@
     "fd-find",
     "fzf",
     "jq",
-    "direnv",
     "zoxide"
   ]

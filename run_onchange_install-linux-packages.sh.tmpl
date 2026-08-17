@@ -4,8 +4,8 @@
 # run_onchange_install-linux-packages.sh.tmpl
 #
 # Linux devserver counterpart to run_onchange_install-packages.sh (Homebrew on
-# macOS). Installs CLI tooling with dnf, then fetches neovim from the official
-# tarball because the distro build is too old for this config.
+# macOS). dnf covers what the repos carry; everything else is fetched from
+# upstream releases into ~/.local.
 #
 # Re-runs whenever the resolved package list changes:
 # dnf packages: {{ .packages.dnf.linux | quote }}
@@ -17,14 +17,15 @@ set -uo pipefail
 
 FAILED=()
 
-# --- Proxy ------------------------------------------------------------------
-# github.com is only reachable through fwdproxy on a devserver. Detect it
-# rather than hardcoding, so this stays a no-op on an unproxied Linux box.
-if getent hosts fwdproxy >/dev/null 2>&1; then
-    export https_proxy="fwdproxy:8082"
-    export http_proxy="fwdproxy:8080"
-    echo "==> Routing outbound fetches through fwdproxy"
-fi
+{{ template "linux-net.sh" . }}
+
+case "$(uname -m)" in
+    x86_64)  NVIM_ARCH="linux-x86_64"; GO_ARCH="amd64" ;;
+    aarch64) NVIM_ARCH="linux-arm64";  GO_ARCH="arm64" ;;
+    *)       NVIM_ARCH="";             GO_ARCH="" ;;
+esac
+
+mkdir -p "$HOME/.local/bin"
 
 # --- dnf packages -----------------------------------------------------------
 if ! command -v dnf >/dev/null 2>&1; then
@@ -46,9 +47,16 @@ else
     done
 fi
 
+# fd-find installs the binary as `fdfind` on some distros. Shim it so muscle
+# memory and any tooling expecting `fd` keep working.
+if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
+    ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+    echo "  Linked fdfind -> ~/.local/bin/fd"
+fi
+
 # --- neovim from tarball ----------------------------------------------------
-# The config needs 0.10+ (lazy.nvim, blink.cmp, conform, treesitter main).
-# Delete ~/.local/nvim to force a re-install onto a newer release.
+# The config needs 0.10+ (lazy.nvim, blink.cmp, conform, treesitter main), well
+# ahead of the distro build. Delete ~/.local/nvim to force a re-install.
 NVIM_PREFIX="$HOME/.local/nvim"
 NVIM_BIN="$HOME/.local/bin/nvim"
 
@@ -56,37 +64,84 @@ nvim_is_current() {
     local v
     v="$("$NVIM_BIN" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+')" || return 1
     [ -n "$v" ] || return 1
-    # Accept 0.10+ and any future 1.x
     awk -v v="$v" 'BEGIN { split(v, p, "."); exit !(p[1] > 0 || p[2] >= 10) }'
 }
 
 if [ -x "$NVIM_BIN" ] && nvim_is_current; then
     echo "==> Using neovim $("$NVIM_BIN" --version | head -1)"
+elif [ -z "$NVIM_ARCH" ]; then
+    echo "==> Unsupported architecture $(uname -m). Skipping neovim."
+    FAILED+=("neovim (unsupported arch)")
+elif ! net_resolve; then
+    FAILED+=("neovim (no network route)")
 else
     echo "==> Installing neovim from official tarball"
-    case "$(uname -m)" in
-        x86_64)  NVIM_ARCH="linux-x86_64" ;;
-        aarch64) NVIM_ARCH="linux-arm64" ;;
-        *)       NVIM_ARCH="" ;;
-    esac
-
-    if [ -z "$NVIM_ARCH" ]; then
-        echo "  Unsupported architecture $(uname -m). Skipping neovim."
-        FAILED+=("neovim (unsupported arch)")
+    TMP="$(mktemp -d)"
+    URL="https://github.com/neovim/neovim/releases/download/stable/nvim-${NVIM_ARCH}.tar.gz"
+    if net_fetch "$URL" "$TMP/nvim.tar.gz" && tar -xzf "$TMP/nvim.tar.gz" -C "$TMP"; then
+        rm -rf "$NVIM_PREFIX"
+        mv "$TMP/nvim-${NVIM_ARCH}" "$NVIM_PREFIX"
+        ln -sf "$NVIM_PREFIX/bin/nvim" "$NVIM_BIN"
+        echo "  Installed $("$NVIM_BIN" --version | head -1)"
     else
-        TMP="$(mktemp -d)"
-        URL="https://github.com/neovim/neovim/releases/download/stable/nvim-${NVIM_ARCH}.tar.gz"
-        if curl -fsSL "$URL" -o "$TMP/nvim.tar.gz" && tar -xzf "$TMP/nvim.tar.gz" -C "$TMP"; then
-            mkdir -p "$HOME/.local/bin"
-            rm -rf "$NVIM_PREFIX"
-            mv "$TMP/nvim-${NVIM_ARCH}" "$NVIM_PREFIX"
-            ln -sf "$NVIM_PREFIX/bin/nvim" "$NVIM_BIN"
-            echo "  Installed $("$NVIM_BIN" --version | head -1)"
+        echo "  FAILED to fetch neovim from $URL"
+        FAILED+=("neovim")
+    fi
+    rm -rf "$TMP"
+fi
+
+# --- volta ------------------------------------------------------------------
+# Homebrew provides this on macOS. Not in the dnf repos, so use the upstream
+# installer. --skip-setup because zshrc already exports VOLTA_HOME and PATH.
+# This must succeed before the run_onchange_after_ volta script, which runs
+# later in the same apply and is currently a no-op without it.
+export VOLTA_HOME="$HOME/.volta"
+if [ -x "$VOLTA_HOME/bin/volta" ]; then
+    echo "==> Using volta $("$VOLTA_HOME/bin/volta" --version 2>/dev/null)"
+elif ! net_resolve; then
+    FAILED+=("volta (no network route)")
+elif [ -z "$NET_PROXY_URL" ] && [ -n "${NET_PROXY_ARGS[*]:-}" ]; then
+    # mTLS-only route: the installer runs its own curl and cannot be told to
+    # present a client cert through the environment.
+    echo "==> Skipping volta: installer cannot use the mTLS proxy"
+    FAILED+=("volta (mTLS proxy unsupported by installer)")
+else
+    echo "==> Installing volta"
+    TMP="$(mktemp -d)"
+    if net_fetch "https://get.volta.sh" "$TMP/volta.sh"; then
+        ( net_export_env; bash "$TMP/volta.sh" --skip-setup ) >/dev/null 2>&1
+        if [ -x "$VOLTA_HOME/bin/volta" ]; then
+            echo "  Installed volta $("$VOLTA_HOME/bin/volta" --version 2>/dev/null)"
         else
-            echo "  FAILED to fetch neovim from $URL"
-            FAILED+=("neovim")
+            echo "  FAILED volta installer did not produce a binary"
+            FAILED+=("volta")
         fi
-        rm -rf "$TMP"
+    else
+        echo "  FAILED to fetch the volta installer"
+        FAILED+=("volta")
+    fi
+    rm -rf "$TMP"
+fi
+
+# --- direnv -----------------------------------------------------------------
+# Absent from the base and EPEL repos, so take the upstream static binary.
+if command -v direnv >/dev/null 2>&1; then
+    echo "==> Using direnv $(direnv version 2>/dev/null)"
+elif [ -z "$GO_ARCH" ]; then
+    echo "==> Unsupported architecture $(uname -m). Skipping direnv."
+    FAILED+=("direnv (unsupported arch)")
+elif ! net_resolve; then
+    FAILED+=("direnv (no network route)")
+else
+    echo "==> Installing direnv"
+    URL="https://github.com/direnv/direnv/releases/latest/download/direnv.linux-${GO_ARCH}"
+    if net_fetch "$URL" "$HOME/.local/bin/direnv"; then
+        chmod +x "$HOME/.local/bin/direnv"
+        echo "  Installed direnv $("$HOME/.local/bin/direnv" version 2>/dev/null)"
+    else
+        rm -f "$HOME/.local/bin/direnv"
+        echo "  FAILED to fetch direnv from $URL"
+        FAILED+=("direnv")
     fi
 fi
 
