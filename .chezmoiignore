@@ -5,15 +5,16 @@ LICENSE
 scripts/
 *.swp
 
-{{ if ne .chezmoi.os "darwin" }}
-Library/
-run_once_activate_key_remapping.sh
-run_once_set_macos_defaults.sh
-# Terminal emulators and GUI apps run on the Mac client, not on the headless
-# devserver. Their configs would just be dead files there.
-.config/iterm2/
-.config/ghostty/
-.config/cmux/
-# Only consumed by the Homebrew script, which is darwin-gated.
-.config/brew/
-{{ end }}
+# Only repo metadata is ignored. Everything else deploys to every machine,
+# including config that a given platform cannot use — an unread
+# ~/.config/ghostty on the devserver costs nothing and keeps the two machines
+# identical.
+#
+# This is safe because platform-specific behaviour is handled where it
+# executes, not by withholding files:
+#   - run_once_activate_key_remapping.sh and run_once_set_macos_defaults.sh
+#     both exit 0 immediately when uname is not Darwin.
+#   - run_once_configure_macos.sh, run_onchange_install-packages.sh, and
+#     run_onchange_install-linux-packages.sh are template-gated on
+#     .chezmoi.os and render to a bare shebang off their platform.
+# Add a guard to the script rather than an entry here.
