@@ -18,15 +18,15 @@
 # dnf packages for the Linux devserver. macOS covers the same ground through
 # dot_config/brew/Brewfile.
 #
-# Confirmed installable on the devserver. Absent on purpose:
-#   neovim  distro build predates what this config needs (0.10+)
-#   volta   not packaged
-#   direnv  not in base or EPEL; `dnf install` fails
-# All three are fetched from upstream releases into ~/.local by
-# run_onchange_install-linux-packages.sh instead.
+# Confirmed installable on the devserver. jq and unzip are here to support
+# run_onchange_install-linux-packages.sh itself: jq reads release tags off the
+# GitHub API, unzip unpacks stylua.
 #
-# Still unhandled, also missing from the repos: lazygit, difftastic, stylua,
-# shfmt, uv. Add them the same way if you end up wanting them here.
+# Absent on purpose, because the repos do not carry them. That script fetches
+# each from its upstream release into ~/.local instead:
+#   neovim   distro build predates what this config needs (0.10+)
+#   volta    upstream installer
+#   direnv, lazygit, difftastic (difft), stylua, shfmt, uv
 [packages.dnf]
   linux = [
     "zsh",
@@ -36,5 +36,6 @@
     "fd-find",
     "fzf",
     "jq",
+    "unzip",
     "zoxide"
   ]

@@ -20,9 +20,9 @@ FAILED=()
 {{ template "linux-net.sh" . }}
 
 case "$(uname -m)" in
-    x86_64)  NVIM_ARCH="linux-x86_64"; GO_ARCH="amd64" ;;
-    aarch64) NVIM_ARCH="linux-arm64";  GO_ARCH="arm64" ;;
-    *)       NVIM_ARCH="";             GO_ARCH="" ;;
+    x86_64)  NVIM_ARCH="linux-x86_64" ;;
+    aarch64) NVIM_ARCH="linux-arm64" ;;
+    *)       NVIM_ARCH="" ;;
 esac
 
 mkdir -p "$HOME/.local/bin"
@@ -123,26 +123,77 @@ else
     rm -rf "$TMP"
 fi
 
-# --- direnv -----------------------------------------------------------------
-# Absent from the base and EPEL repos, so take the upstream static binary.
-if command -v direnv >/dev/null 2>&1; then
-    echo "==> Using direnv $(direnv version 2>/dev/null)"
-elif [ -z "$GO_ARCH" ]; then
-    echo "==> Unsupported architecture $(uname -m). Skipping direnv."
-    FAILED+=("direnv (unsupported arch)")
-elif ! net_resolve; then
-    FAILED+=("direnv (no network route)")
-else
-    echo "==> Installing direnv"
-    URL="https://github.com/direnv/direnv/releases/latest/download/direnv.linux-${GO_ARCH}"
-    if net_fetch "$URL" "$HOME/.local/bin/direnv"; then
-        chmod +x "$HOME/.local/bin/direnv"
-        echo "  Installed direnv $("$HOME/.local/bin/direnv" version 2>/dev/null)"
-    else
-        rm -f "$HOME/.local/bin/direnv"
-        echo "  FAILED to fetch direnv from $URL"
-        FAILED+=("direnv")
+# --- upstream release binaries ----------------------------------------------
+# Everything in the Brewfile that the dnf repos do not carry. Asset names and
+# archive layouts were read off the GitHub API rather than guessed; only the
+# x86_64 assets were confirmed, so other architectures are skipped instead of
+# being fed a URL that may not exist.
+#
+# install_release <binary> <url> <kind> [member]
+#   kind    raw | targz | zip
+#   member  path to the binary inside the archive (defaults to <binary>)
+install_release() {
+    local name="$1" url="$2" kind="$3" member="${4:-}"
+    [ -n "$member" ] || member="$name"
+
+    if command -v "$name" >/dev/null 2>&1; then
+        echo "==> Using $name ($(command -v "$name"))"
+        return 0
     fi
+    if [ -z "$url" ]; then
+        echo "  FAILED $name (could not resolve a download URL)"
+        FAILED+=("$name")
+        return 1
+    fi
+
+    echo "==> Installing $name"
+    local tmp ok=1
+    tmp="$(mktemp -d)"
+    case "$kind" in
+        raw)   net_fetch "$url" "$tmp/$member" || ok=0 ;;
+        targz) { net_fetch "$url" "$tmp/a.tar.gz" && tar -xzf "$tmp/a.tar.gz" -C "$tmp"; } || ok=0 ;;
+        zip)   { net_fetch "$url" "$tmp/a.zip" && unzip -oq "$tmp/a.zip" -d "$tmp"; } || ok=0 ;;
+    esac
+
+    if [ "$ok" -eq 1 ] && [ -f "$tmp/$member" ]; then
+        install -m 0755 "$tmp/$member" "$HOME/.local/bin/$name"
+        echo "  Installed $name"
+    else
+        echo "  FAILED $name from $url"
+        FAILED+=("$name")
+        ok=0
+    fi
+    rm -rf "$tmp"
+    [ "$ok" -eq 1 ]
+}
+
+if [ "$(uname -m)" != "x86_64" ]; then
+    echo "==> Skipping release binaries on $(uname -m): only x86_64 assets are verified"
+elif ! net_resolve; then
+    FAILED+=("release binaries (no network route)")
+else
+    # Stable "latest/download" URLs: no version in the asset name.
+    install_release direnv \
+        "https://github.com/direnv/direnv/releases/latest/download/direnv.linux-amd64" raw
+    install_release difft \
+        "https://github.com/Wilfred/difftastic/releases/latest/download/difft-x86_64-unknown-linux-gnu.tar.gz" targz
+    install_release stylua \
+        "https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip" zip
+    install_release uv \
+        "https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz" targz \
+        "uv-x86_64-unknown-linux-gnu/uv"
+
+    # These two embed the version in the filename, so resolve the tag first.
+    # lazygit lowercased "linux" in its asset name as of v0.64.x.
+    lg_tag="$(gh_latest_tag jesseduffield/lazygit || true)"
+    lg_url=""
+    [ -n "$lg_tag" ] && lg_url="https://github.com/jesseduffield/lazygit/releases/download/${lg_tag}/lazygit_${lg_tag#v}_linux_x86_64.tar.gz"
+    install_release lazygit "$lg_url" targz
+
+    sh_tag="$(gh_latest_tag mvdan/sh || true)"
+    sh_url=""
+    [ -n "$sh_tag" ] && sh_url="https://github.com/mvdan/sh/releases/download/${sh_tag}/shfmt_${sh_tag}_linux_amd64"
+    install_release shfmt "$sh_url" raw
 fi
 
 # --- Summary ----------------------------------------------------------------

@@ -58,6 +58,21 @@ net_fetch() {
     curl -fsSL --max-time 300 ${NET_PROXY_ARGS[@]+"${NET_PROXY_ARGS[@]}"} "$1" -o "$2"
 }
 
+# net_get <url> — response body on stdout
+net_get() {
+    curl -fsSL --max-time 60 ${NET_PROXY_ARGS[@]+"${NET_PROXY_ARGS[@]}"} "$1"
+}
+
+# gh_latest_tag <owner/repo> — latest release tag, empty on failure.
+# Needed only for projects that embed the version in the asset filename.
+gh_latest_tag() {
+    if ! command -v jq >/dev/null 2>&1; then
+        echo "  jq unavailable; cannot resolve the latest tag for $1" >&2
+        return 1
+    fi
+    net_get "https://api.github.com/repos/$1/releases/latest" | jq -r '.tag_name // empty'
+}
+
 # Export proxy vars for child processes that run their own curl (installer
 # scripts). Only possible for the plain-URL cases; the mTLS variant needs
 # curl-specific flags that no environment variable can express.
