@@ -1,0 +1,10 @@
+# Targets chezmoi should delete rather than merely stop managing. Removing a
+# file from the source directory only makes chezmoi forget about it; the copy
+# already on disk stays and keeps being sourced.
+#
+# fzf's own installer generates these two, and both rc files used to source
+# them. They now initialise fzf inline instead, so the leftovers are dead code
+# that also appended a Homebrew keg path -- the one difference that stopped
+# bash and zsh from resolving identical PATHs on macOS.
+.fzf.zsh
+.fzf.bash

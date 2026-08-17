@@ -90,10 +90,24 @@ PS1='\u@\h:\w\$ '
 
 ########## FINALIZATION ##########
 
-# FZF. Sourced here rather than at the top of the file: ~/.fzf.bash probes for
-# the binary, and before the PATH block above ran it would miss an install in
-# ~/.local/bin and quietly no-op.
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# FZF. Inlined here rather than sourced from ~/.fzf.bash so both shells set it
+# up identically -- fzf's generated rc file also appended a Homebrew keg path,
+# which was the one thing making bash and zsh resolve different PATHs. Late in
+# the file on purpose: the probe needs the PATH block above to have run.
+# `fzf --bash` only exists from 0.48 onward. The dnf build on the devserver
+# predates it, and an unguarded call prints "unknown option" on every prompt,
+# so fall back to the shell scripts the older package ships separately.
+if command -v fzf >/dev/null 2>&1; then
+  if _fzf_init="$(fzf --bash 2>/dev/null)"; then
+    eval "$_fzf_init"
+  else
+    for _fzf_f in /usr/share/fzf/shell/key-bindings.bash \
+                  /usr/share/fzf/shell/completion.bash; do
+      [ -r "$_fzf_f" ] && source "$_fzf_f"
+    done
+  fi
+  unset _fzf_init _fzf_f
+fi
 
 # Zoxide (smarter cd)
 if command -v zoxide >/dev/null 2>&1; then

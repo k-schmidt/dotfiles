@@ -1,4 +1,14 @@
 #!/bin/bash
+
+# run_after_, not run_once_. See run_after_install_tpm.sh for the reasoning:
+# a run_once_ script that fails is still marked done and never retried, which
+# is how the devserver ended up with no oh-my-zsh. Every step below is guarded
+# by a directory check, so a re-run is four stat calls when nothing is missing.
+#
+# The oh-my-zsh installer curls raw.githubusercontent.com, which the gitconfig
+# proxy block does not cover and which no environment variable can reach on an
+# mTLS-only host -- so that one can still fail. It now gets another attempt on
+# every apply instead of exactly one, forever.
 {{ if eq .chezmoi.os "linux" }}
 # github.com and raw.githubusercontent.com need fwdproxy on a devserver. Only
 # resolve a route when something is actually missing, so the common case where

@@ -26,7 +26,7 @@
 #   neovim       distro build predates what this config needs (0.10+)
 #   tree-sitter  nvim-treesitter (main) requires the CLI at >= 0.26.1
 #   volta        upstream installer
-#   direnv, lazygit, difftastic (difft), stylua, shfmt, uv
+#   direnv, lazygit, difftastic (difft), stylua, shfmt, uv, gh
 [packages.dnf]
   linux = [
     "zsh",

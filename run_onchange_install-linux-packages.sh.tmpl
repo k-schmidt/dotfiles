@@ -233,6 +233,13 @@ else
     sh_url=""
     [ -n "$sh_tag" ] && sh_url="https://github.com/mvdan/sh/releases/download/${sh_tag}/shfmt_${sh_tag}_linux_amd64"
     install_release shfmt "$sh_url" raw
+
+    # gh nests its binary under a versioned directory, so the member path has
+    # to be built from the tag too, not just the URL.
+    gh_tag="$(gh_latest_tag cli/cli || true)"
+    gh_url=""
+    [ -n "$gh_tag" ] && gh_url="https://github.com/cli/cli/releases/download/${gh_tag}/gh_${gh_tag#v}_linux_amd64.tar.gz"
+    install_release gh "$gh_url" targz "gh_${gh_tag#v}_linux_amd64/bin/gh"
 fi
 
 # --- Summary ----------------------------------------------------------------
