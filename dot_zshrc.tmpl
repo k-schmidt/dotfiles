@@ -42,6 +42,17 @@ export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 # SSH session on the devserver, where no VS Code instance is listening.
 export EDITOR="nvim"
 export VISUAL="nvim"
+{{- if eq .chezmoi.os "linux" }}
+
+# nvim 0.12 queries the terminal for its background color at startup and waits
+# 100ms for a DSR reply. Over SSH into the devserver that round trip misses the
+# window, so every launch prints E1568 and stalls. Skip the query; 'background'
+# then stays at its "dark" default, which is what catppuccin wants anyway.
+# Must be an env var -- the queries run before user config, so `set nottyfast`
+# in init.lua is too late. Left on for macOS, where the terminal is local and
+# the reply arrives in time.
+export NVIM_NOTTYFAST=1
+{{- end }}
 
 ########## SETTINGS & ALIASES ##########
 
