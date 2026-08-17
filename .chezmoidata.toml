@@ -17,12 +17,15 @@
 #
 # Confirmed installable on the devserver. jq and unzip are here to support
 # run_onchange_install-linux-packages.sh itself: jq reads release tags off the
-# GitHub API, unzip unpacks stylua.
+# GitHub API, unzip unpacks stylua. gcc is for `tree-sitter build`, which
+# compiles a parser.so per language and would otherwise fail on a box that
+# never had a C toolchain installed.
 #
-# Absent on purpose, because the repos do not carry them. That script fetches
-# each from its upstream release into ~/.local instead:
-#   neovim   distro build predates what this config needs (0.10+)
-#   volta    upstream installer
+# Absent on purpose, because the repos do not carry them at a usable version.
+# That script fetches each from its upstream release into ~/.local instead:
+#   neovim       distro build predates what this config needs (0.10+)
+#   tree-sitter  nvim-treesitter (main) requires the CLI at >= 0.26.1
+#   volta        upstream installer
 #   direnv, lazygit, difftastic (difft), stylua, shfmt, uv
 [packages.dnf]
   linux = [
@@ -34,5 +37,6 @@
     "fzf",
     "jq",
     "unzip",
-    "zoxide"
+    "zoxide",
+    "gcc"
   ]

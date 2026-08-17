@@ -160,7 +160,7 @@ fi
 # being fed a URL that may not exist.
 #
 # install_release <binary> <url> <kind> [member]
-#   kind    raw | targz | zip
+#   kind    raw | gz | targz | zip
 #   member  path to the binary inside the archive (defaults to <binary>)
 install_release() {
     local name="$1" url="$2" kind="$3" member="${4:-}"
@@ -181,6 +181,9 @@ install_release() {
     tmp="$(mktemp -d)"
     case "$kind" in
         raw)   net_fetch "$url" "$tmp/$member" || ok=0 ;;
+        # A bare gzipped binary, not an archive: decompress to a named path
+        # rather than letting gunzip pick one by stripping the suffix.
+        gz)    { net_fetch "$url" "$tmp/a.gz" && gzip -dc "$tmp/a.gz" > "$tmp/$member"; } || ok=0 ;;
         targz) { net_fetch "$url" "$tmp/a.tar.gz" && tar -xzf "$tmp/a.tar.gz" -C "$tmp"; } || ok=0 ;;
         zip)   { net_fetch "$url" "$tmp/a.zip" && unzip -oq "$tmp/a.zip" -d "$tmp"; } || ok=0 ;;
     esac
@@ -209,6 +212,12 @@ else
         "https://github.com/Wilfred/difftastic/releases/latest/download/difft-x86_64-unknown-linux-gnu.tar.gz" targz
     install_release stylua \
         "https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip" zip
+    # nvim-treesitter (main) shells out to a bare `tree-sitter` for both
+    # `generate` and `build` on every parser, and its health check demands
+    # >= 0.26.1 -- far past anything a distro would carry. Shipped as a lone
+    # gzipped binary rather than a tarball, hence the gz kind above.
+    install_release tree-sitter \
+        "https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz" gz
     install_release uv \
         "https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz" targz \
         "uv-x86_64-unknown-linux-gnu/uv"
