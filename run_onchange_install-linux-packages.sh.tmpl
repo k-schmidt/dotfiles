@@ -1,0 +1,103 @@
+#!/bin/bash
+{{ if eq .chezmoi.os "linux" -}}
+
+# run_onchange_install-linux-packages.sh.tmpl
+#
+# Linux devserver counterpart to run_onchange_install-packages.sh (Homebrew on
+# macOS). Installs CLI tooling with dnf, then fetches neovim from the official
+# tarball because the distro build is too old for this config.
+#
+# Re-runs whenever the resolved package list changes:
+# dnf packages: {{ .packages.dnf.linux | quote }}
+
+# Deliberately NOT `set -e`. A single unavailable package must not abort the
+# whole `chezmoi apply` and block the scripts that run after this one. Failures
+# are collected and reported, and the script always exits 0.
+set -uo pipefail
+
+FAILED=()
+
+# --- Proxy ------------------------------------------------------------------
+# github.com is only reachable through fwdproxy on a devserver. Detect it
+# rather than hardcoding, so this stays a no-op on an unproxied Linux box.
+if getent hosts fwdproxy >/dev/null 2>&1; then
+    export https_proxy="fwdproxy:8082"
+    export http_proxy="fwdproxy:8080"
+    echo "==> Routing outbound fetches through fwdproxy"
+fi
+
+# --- dnf packages -----------------------------------------------------------
+if ! command -v dnf >/dev/null 2>&1; then
+    echo "dnf not found. Skipping system package installation."
+elif ! sudo -n true 2>/dev/null; then
+    echo "Passwordless sudo unavailable. Skipping dnf; run this manually:"
+    echo "  sudo dnf install -y {{ .packages.dnf.linux | join " " }}"
+else
+    echo "==> Installing system packages with dnf"
+    for pkg in {{ range .packages.dnf.linux }}{{ . | quote }} {{ end }}; do
+        if rpm -q "$pkg" >/dev/null 2>&1; then
+            echo "  Using $pkg"
+        elif sudo dnf install -y "$pkg" >/dev/null 2>&1; then
+            echo "  Installed $pkg"
+        else
+            echo "  FAILED $pkg"
+            FAILED+=("$pkg")
+        fi
+    done
+fi
+
+# --- neovim from tarball ----------------------------------------------------
+# The config needs 0.10+ (lazy.nvim, blink.cmp, conform, treesitter main).
+# Delete ~/.local/nvim to force a re-install onto a newer release.
+NVIM_PREFIX="$HOME/.local/nvim"
+NVIM_BIN="$HOME/.local/bin/nvim"
+
+nvim_is_current() {
+    local v
+    v="$("$NVIM_BIN" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+')" || return 1
+    [ -n "$v" ] || return 1
+    # Accept 0.10+ and any future 1.x
+    awk -v v="$v" 'BEGIN { split(v, p, "."); exit !(p[1] > 0 || p[2] >= 10) }'
+}
+
+if [ -x "$NVIM_BIN" ] && nvim_is_current; then
+    echo "==> Using neovim $("$NVIM_BIN" --version | head -1)"
+else
+    echo "==> Installing neovim from official tarball"
+    case "$(uname -m)" in
+        x86_64)  NVIM_ARCH="linux-x86_64" ;;
+        aarch64) NVIM_ARCH="linux-arm64" ;;
+        *)       NVIM_ARCH="" ;;
+    esac
+
+    if [ -z "$NVIM_ARCH" ]; then
+        echo "  Unsupported architecture $(uname -m). Skipping neovim."
+        FAILED+=("neovim (unsupported arch)")
+    else
+        TMP="$(mktemp -d)"
+        URL="https://github.com/neovim/neovim/releases/download/stable/nvim-${NVIM_ARCH}.tar.gz"
+        if curl -fsSL "$URL" -o "$TMP/nvim.tar.gz" && tar -xzf "$TMP/nvim.tar.gz" -C "$TMP"; then
+            mkdir -p "$HOME/.local/bin"
+            rm -rf "$NVIM_PREFIX"
+            mv "$TMP/nvim-${NVIM_ARCH}" "$NVIM_PREFIX"
+            ln -sf "$NVIM_PREFIX/bin/nvim" "$NVIM_BIN"
+            echo "  Installed $("$NVIM_BIN" --version | head -1)"
+        else
+            echo "  FAILED to fetch neovim from $URL"
+            FAILED+=("neovim")
+        fi
+        rm -rf "$TMP"
+    fi
+fi
+
+# --- Summary ----------------------------------------------------------------
+if [ ${#FAILED[@]} -gt 0 ]; then
+    echo
+    echo "Linux package install finished with ${#FAILED[@]} failure(s):"
+    printf '  - %s\n' "${FAILED[@]}"
+    echo "Everything else succeeded; continuing so later scripts still run."
+fi
+
+exit 0
+
+{{ end -}}

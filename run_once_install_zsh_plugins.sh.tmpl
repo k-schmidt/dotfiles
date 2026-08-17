@@ -1,5 +1,15 @@
 #!/bin/bash
-
+{{ if eq .chezmoi.os "linux" }}
+# github.com and raw.githubusercontent.com are only reachable through fwdproxy
+# on a devserver. Detected rather than hardcoded, so this stays inert on an
+# unproxied Linux box. Scoped to this script: exporting a proxy globally from
+# zshrc would misroute internal traffic.
+if getent hosts fwdproxy >/dev/null 2>&1; then
+  export https_proxy="fwdproxy:8082"
+  export http_proxy="fwdproxy:8080"
+  echo "Routing github fetches through fwdproxy"
+fi
+{{ end }}
 # 1. Install Oh My Zsh (unattended) if it's missing
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "Installing Oh My Zsh..."

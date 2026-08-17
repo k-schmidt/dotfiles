@@ -1,9 +1,39 @@
-[packages]
-  volta = [
+# Volta-managed Node tooling.
+#
+# `common` installs on every machine. `darwin` adds the AI CLIs: on the Linux
+# devserver those are installed and updated centrally at /usr/local/bin, and a
+# Volta copy would shadow the managed one with a stale version.
+[packages.volta]
+  common = [
     "node",
-    "@anthropic-ai/claude-code",
-    "@openai/codex",
     "typescript",
     "neovim",
     "prettier"
+  ]
+  darwin = [
+    "@anthropic-ai/claude-code",
+    "@openai/codex"
+  ]
+
+# dnf packages for the Linux devserver. macOS covers the same ground through
+# dot_config/brew/Brewfile.
+#
+# neovim is deliberately absent: the distro build is far older than this config
+# needs, so run_onchange_install-linux-packages.sh fetches the official tarball
+# into ~/.local instead.
+#
+# Not attempted here, as they are absent from the base and EPEL repos:
+# lazygit, difftastic, stylua, shfmt, uv. Install those on demand if you decide
+# you want them on the devserver.
+[packages.dnf]
+  linux = [
+    "zsh",
+    "git",
+    "tmux",
+    "ripgrep",
+    "fd-find",
+    "fzf",
+    "jq",
+    "direnv",
+    "zoxide"
   ]

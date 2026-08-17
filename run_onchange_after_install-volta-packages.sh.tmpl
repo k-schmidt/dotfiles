@@ -2,8 +2,14 @@
 
 # run_onchange_after_install-volta-packages.sh.tmpl
 
-# This hash comment forces the script to re-run whenever your TOML package list changes:
-# packages: {{ .packages.volta | quote }}
+{{- $volta := .packages.volta.common -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $volta = concat $volta .packages.volta.darwin -}}
+{{- end }}
+
+# This hash comment forces the script to re-run whenever the resolved package
+# list changes. It is per-OS, so macOS and Linux re-run independently:
+# packages: {{ $volta | quote }}
 
 set -eufo pipefail
 
@@ -20,8 +26,8 @@ fi
 
 echo "Installing/Updating Volta packages..."
 
-# 2. Iterate through the list defined in .chezmoidata.toml
-{{ range .packages.volta -}}
+# 2. Iterate through the list resolved above from .chezmoidata.toml
+{{ range $volta -}}
 volta install {{ . | quote }}
 {{ end -}}
 

@@ -9,5 +9,11 @@ scripts/
 Library/
 run_once_activate_key_remapping.sh
 run_once_set_macos_defaults.sh
+# Terminal emulators and GUI apps run on the Mac client, not on the headless
+# devserver. Their configs would just be dead files there.
 .config/iterm2/
+.config/ghostty/
+.config/cmux/
+# Only consumed by the Homebrew script, which is darwin-gated.
+.config/brew/
 {{ end }}

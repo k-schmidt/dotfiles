@@ -38,9 +38,10 @@ fi
 # Add custom bin directories
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
-# Default editor
-export EDITOR="code --wait"
-export VISUAL="code --wait"
+# Default editor. nvim on both platforms: `code --wait` hangs forever in a bare
+# SSH session on the devserver, where no VS Code instance is listening.
+export EDITOR="nvim"
+export VISUAL="nvim"
 
 ########## SETTINGS & ALIASES ##########
 
@@ -94,7 +95,7 @@ alias vi="nvim"
 alias vim="nvim"
 
 # Quick Config Edits
-alias zshrc='code ~/.zshrc'
+alias zshrc='$EDITOR ~/.zshrc'
 alias src='source ~/.zshrc'
 
 # SSH shortcuts
