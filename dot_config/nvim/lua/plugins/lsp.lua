@@ -3,8 +3,9 @@ local servers = {
   -- Python: pyrefly types, ruff lint/format. Both supersede pyright.
   "pyrefly",
   "ruff",
-  -- Web: tsgo is the native TypeScript server, superseding ts_ls.
-  "tsgo",
+  -- Web: tsc is the native TypeScript 7 server, superseding ts_ls. Not tsgo --
+  -- that was the preview package, deprecated once TS 7 shipped in typescript.
+  "tsc",
   "eslint",
   "tailwindcss",
   "lua_ls",
