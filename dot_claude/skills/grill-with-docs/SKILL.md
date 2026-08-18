@@ -11,6 +11,8 @@ Ask the questions one at a time, waiting for feedback on each question before co
 
 If a question can be answered by exploring the codebase, explore the codebase instead.
 
+This session is **HITL by construction** — its whole value is a human answering one question at a time. Never delegate it to a worker agent, and never run it inside a worktree during a fan-out. It runs before the work divides, with the user present.
+
 </what-to-do>
 
 <supporting-info>
@@ -75,6 +77,21 @@ When a term is resolved, update `CONTEXT.md` right there. Don't batch these up �
 
 `CONTEXT.md` should be totally devoid of implementation details. Do not treat `CONTEXT.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
 
+### Prioritise the decisions that must be settled before the work divides
+
+This plan is likely headed for `/to-prd`, which splits it into worktrees that separate agents build in parallel. That changes which open questions are urgent.
+
+A decision is **pre-fan-out** if two workers who never speak to each other would each have to answer it, and could answer it differently. Those are the expensive ones — not because they are hard, but because the cost of getting them wrong is discovered at merge time, when both sides are already built. Chase them first:
+
+- **Shared vocabulary.** Two workers naming the same concept differently produces two half-right glossaries and an API that reads like it was designed by strangers.
+- **Interfaces at the seams.** Any signature, event shape, payload, or table column that one module exposes and another consumes.
+- **Ownership of shared surfaces.** Schema, migration ordering, root config, generated files, lockfiles. Who writes them, and who merely reads them.
+- **Error and edge-case semantics that cross a seam.** What a caller receives on failure is part of the contract, not an implementation detail.
+
+Everything else — naming inside a module, local structure, test organisation — is safely deferrable to whichever worker owns it. Do not spend the user's attention on decisions a single worker can make alone and reverse cheaply.
+
+When you resolve a pre-fan-out decision, note it as one. `/to-prd` needs to list it under **Frozen Interfaces**, and a contract that was settled here but not written down there gets re-litigated by every worker independently.
+
 ### Offer ADRs sparingly
 
 Only offer to create an ADR when all three are true:
@@ -87,6 +104,10 @@ If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](
 
 ### Wrap up
 
-When the grilling is complete, offer to hand off to `/to-prd` to capture the refined plan as a PRD. Do not offer to implement any changes.
+When the grilling is complete, summarise the **pre-fan-out decisions** you settled — the shared vocabulary, the interfaces at the seams, and who owns each shared surface — separately from the rest. That list is the raw material for the PRD's Frozen Interfaces and Worktree Plan sections.
+
+Then offer to hand off to `/to-prd`, which captures the refined plan as a PRD and plans the worktrees the work will be divided across. Do not offer to implement any changes, and do not plan the worktrees here — that needs the module sketch `/to-prd` produces.
+
+If any pre-fan-out decision is still unresolved when the session ends, name it plainly. `/to-prd` marks it UNRESOLVED and blocks the work that depends on it, which is the correct outcome — a guessed contract gets built twice, incompatibly.
 
 </supporting-info>

@@ -65,13 +65,20 @@ git push
 
 ## Claude Code Skills
 
-Skills are reusable prompts that extend Claude Code. Pipeline: `/grill-with-docs` → `/to-prd` → `/to-issues`.
+Skills are reusable prompts that extend Claude Code. The pipeline runs
+`/grill-with-docs` → `/to-prd` → `/to-issues` → `/fan-out`, narrowing from open
+questions to parallel workers:
 
-* **`/grill-with-docs`** — Interview-style session that stress-tests a plan against the project's domain model. Updates `docs/CONTEXT.md` and `docs/adr/` inline as decisions crystallize.
-* **`/to-prd`** — Synthesizes conversation context into a file-based PRD at `specs/PRD-{name}.md`. Captures what to build and why.
-* **`/to-issues`** — Breaks a PRD into tracer-bullet vertical slices. Each issue cuts end-to-end through all layers.
+* **`/grill-with-docs`** — Interview-style session that stress-tests a plan against the project's domain model. Prioritizes *pre-fan-out* decisions — the ones two isolated workers would otherwise answer differently. Updates `docs/CONTEXT.md` and `docs/adr/` inline as decisions crystallize. HITL by construction; never delegated.
+* **`/to-prd`** — Synthesizes context into a PRD at `specs/PRD-{name}.md`: what to build, why, the frozen interfaces at each module seam, and **the worktree plan** the work divides across.
+* **`/to-issues`** — Breaks the PRD into issues, each assigned to exactly one worktree and writing only that worktree's files. Prefers vertical slices, but the worktree boundary wins when they conflict.
+* **`/fan-out`** — Verifies the split is write-disjoint, then spawns one worker per AFK worktree in an isolated git worktree while HITL work stays with you. Reviews each branch before merge and integrates in dependency order.
 * **`/improve-codebase-architecture`** — Surfaces deepening opportunities: refactors that turn shallow modules into deep ones.
 * **`/dotfiles`** — Manages dotfiles with chezmoi. Handles adding files, committing, and syncing.
+
+The two invariants the pipeline exists to protect: **no two worktrees write the same
+file**, and **no worker starts against an unresolved interface.** Violating the first
+guarantees a hand-merge; violating the second guarantees a rewrite.
 
 ## Structure
 
