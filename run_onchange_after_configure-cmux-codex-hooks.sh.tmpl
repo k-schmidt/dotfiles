@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Re-run when the managed agent package set or this integration changes.
+# Brewfile: {{ include "dot_config/brew/Brewfile" | sha256sum }}
+
+set -u
+
+if ! command -v cmux >/dev/null 2>&1; then
+	echo "cmux not found. Skipping Codex hook installation."
+	exit 0
+fi
+
+if ! command -v codex >/dev/null 2>&1; then
+	echo "Codex not found. Skipping cmux hook installation."
+	exit 0
+fi
+
+echo "Installing the cmux Codex integration..."
+cmux hooks codex install --yes

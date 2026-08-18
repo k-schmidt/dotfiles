@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Remove only the known stale home-level copy. Root AGENTS.md is now
+# repository-only, while global Codex guidance lives at ~/.codex/AGENTS.md.
+# Legacy SHA-256: ddb9c4e7bb8411b77ac83a0e4080391cabdec440196673a04150753c2953cc69
+
+set -u
+
+legacy="$HOME/AGENTS.md"
+expected="ddb9c4e7bb8411b77ac83a0e4080391cabdec440196673a04150753c2953cc69"
+
+if [[ ! -f "$legacy" ]]; then
+	exit 0
+fi
+
+actual=$(shasum -a 256 "$legacy" | awk '{print $1}')
+if [[ "$actual" == "$expected" ]]; then
+	echo "Removing the retired home-level AGENTS.md..."
+	rm "$legacy"
+else
+	echo "Leaving $legacy untouched because its contents are not the retired managed copy."
+fi

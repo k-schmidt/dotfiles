@@ -18,21 +18,11 @@
   },
 
   "automation": {
+    // Keep cmux's native Claude wrapper for explicit fallback sessions. Codex
+    // remains primary and gets its own supported hooks after both tools are
+    // available.
     "claudeCodeIntegration": true,
-{{- $managed := "/usr/local/bin/claude" }}
-{{- if stat $managed }}
-    // A Meta-managed laptop keeps the canonical claude here, and dot_zshrc
-    // aliases to it. cmux does not read shell aliases, so pin it explicitly or
-    // cmux would launch the Homebrew cask instead.
-    "claudeBinaryPath": "{{ $managed }}"
-{{- else if stat "/opt/homebrew/bin/claude" }}
-    // Homebrew cask (dot_config/brew/Brewfile) is the only copy on a personal
-    // Mac. Pinned so cmux never picks up a stray npm-installed claude.
     "claudeBinaryPath": "/opt/homebrew/bin/claude"
-{{- else }}
-    // No claude on disk yet; leave empty so cmux falls back to PATH lookup.
-    "claudeBinaryPath": ""
-{{- end }}
   },
 
   // This file uses JSON with comments (JSONC).

@@ -1,22 +1,12 @@
 # Volta-managed Node tooling.
 #
 # Homebrew owns everything it packages (see dot_config/brew/Brewfile); Volta
-# owns what only ships on npm. claude-code is a cask and therefore lives in the
-# Brewfile, not here -- installing it in both places is what left this machine
-# running a stale 2.1.223 from the Caskroom while a newer 2.1.232 sat shadowed
-# in ~/.volta/bin, because zshrc prepends Homebrew after Volta.
-#
-# codex has no cask, so npm is the only option.
-#
-# On a Meta-managed laptop /usr/local/bin holds a centrally managed claude and
-# codex; zshrc aliases to those whenever they exist, which shadows both of the
-# installs below. That is intentional -- the aliases are the override, and the
-# entries here are what make a personal Mac come up with the same tools.
+# owns only tools that ship exclusively through npm. Agent CLIs live in the
+# Brewfile so the Homebrew-first PATH resolves one managed copy.
 [packages.volta]
   common = [
     "node",
     "typescript",
     "neovim",
-    "prettier",
-    "@openai/codex"
+    "prettier"
   ]

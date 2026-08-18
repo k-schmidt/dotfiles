@@ -8,3 +8,9 @@
 # bash and zsh from resolving identical PATHs on macOS.
 .fzf.zsh
 .fzf.bash
+
+# Retired agent workflow targets. These need explicit cleanup because removing
+# their source entries would otherwise leave the deployed copies in place.
+.local/bin/ralph
+.agents/skills/architect
+.agents/skills/to-issues

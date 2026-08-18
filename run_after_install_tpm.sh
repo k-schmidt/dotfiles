@@ -6,10 +6,6 @@
 # unexpanded #{...} tokens. The body below is already a no-op when everything
 # is present, so re-checking on every apply costs one stat call and buys an
 # automatic retry.
-#
-# after_, so ~/.gitconfig is on disk first: on a Meta-managed laptop its
-# [http "https://github.com"] block carries the proxy and client cert that
-# make this clone possible at all.
 
 # Ensure the directory exists
 mkdir -p ~/.tmux/plugins

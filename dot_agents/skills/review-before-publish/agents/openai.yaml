@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Before Publish"
+  short_description: "Review a diff before publishing changes"
+  default_prompt: "Use $review-before-publish to review this change before it is published."

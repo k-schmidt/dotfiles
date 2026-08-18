@@ -3,9 +3,14 @@
 # dot_config/brew/Brewfile hash: {{ include "dot_config/brew/Brewfile" | sha256sum }}
 
 if command -v brew >/dev/null 2>&1; then
-    echo "🍺  Brewfile change detected. Installing packages..."
-    brew bundle --file=~/.config/brew/Brewfile
+	# Adopt an identical manually installed ChatGPT.app before Brew Bundle
+	# manages it. If it differs, leave it untouched and let Brew report the
+	# conflict rather than overwriting the application.
+	if [[ -d /Applications/ChatGPT.app ]] && ! brew list --cask chatgpt >/dev/null 2>&1; then
+		brew install --cask --adopt chatgpt || true
+	fi
+	echo "🍺  Brewfile change detected. Installing packages..."
+	brew bundle --file=~/.config/brew/Brewfile
 else
-    echo "Error: Homebrew not found. Skipping package installation."
+	echo "Error: Homebrew not found. Skipping package installation."
 fi
-

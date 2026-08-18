@@ -1,0 +1,11 @@
+{
+  "env": {
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "model": "claude-opus-5[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "tui": "fullscreen"
+}

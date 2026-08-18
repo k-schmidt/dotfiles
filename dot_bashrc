@@ -61,18 +61,10 @@ alias cze="chezmoi edit"
 # shell to the source directory.
 czcd() { cd "$(chezmoi source-path)" || return; }
 
-# Meta remote dev. Guarded: `dev` only exists on the work laptop.
-if command -v dev >/dev/null 2>&1; then
-  alias dc="dev connect"
-fi
-
 # neovim
 alias v="nvim"
 alias vi="nvim"
 alias vim="nvim"
-
-# Claude Code
-alias cc='claude --dangerously-skip-permissions'
 
 ########## PROMPT ##########
 
@@ -102,12 +94,4 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # Ensure Homebrew takes priority over Volta
 if [[ -d /opt/homebrew/bin ]]; then
   export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
-fi
-
-# Prefer the centrally managed CLIs over anything a package manager drops in
-if [[ -x /usr/local/bin/claude ]]; then
-  alias claude='/usr/local/bin/claude'
-fi
-if [[ -x /usr/local/bin/codex ]]; then
-  alias codex='/usr/local/bin/codex'
 fi

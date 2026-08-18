@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Relevant manifests:
+# Brewfile: {{ include "dot_config/brew/Brewfile" | sha256sum }}
+# Volta packages: {{ .packages.volta.common | quote }}
+
+# Package removal is intentionally separate from Brew Bundle, which installs
+# desired packages but does not remove entries deleted from the manifest.
+set -ufo pipefail
+
+if ! command -v brew >/dev/null 2>&1; then
+	echo "Homebrew not found. Skipping agent-tool migration."
+	exit 0
+fi
+
+if brew list --cask codex >/dev/null 2>&1 && command -v volta >/dev/null 2>&1; then
+	if volta list 2>/dev/null | grep -q 'package @openai/codex@'; then
+		echo "Removing the duplicate Volta-managed Codex CLI..."
+		volta uninstall @openai/codex
+	fi
+fi
+
+if brew list --cask cursor >/dev/null 2>&1; then
+	echo "Removing Cursor from the managed application stack..."
+	brew uninstall --cask cursor
+fi

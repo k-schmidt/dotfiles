@@ -99,11 +99,6 @@ alias src='source ~/.zshrc'
 # SSH shortcuts
 alias macmini='ssh kyleschmidt@Kyles-Mac-mini.local'
 
-# Meta remote dev. Guarded: `dev` only exists on the work laptop.
-if command -v dev >/dev/null 2>&1; then
-  alias dc="dev connect"
-fi
-
 ########## FINALIZATION ##########
 
 # FZF setup. Homebrew's fzf is always well past 0.48, so `--zsh` is safe.
@@ -127,25 +122,3 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 if [[ -d /opt/homebrew/bin ]]; then
   export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 fi
-
-# Prefer system-installed CLI tools over Volta-installed versions
-if [[ -x /usr/local/bin/claude ]]; then
-  alias claude='/usr/local/bin/claude'
-fi
-if [[ -x /usr/local/bin/codex ]]; then
-  alias codex='/usr/local/bin/codex'
-fi
-
-alias cc='claude --dangerously-skip-permissions'
-
-# Start a parallel lane: its own worktree at .claude/worktrees/<name>, on branch
-# worktree-<name>. Auto memory is keyed to the repository rather than the checkout,
-# so leaving it on lets one lane's in-progress findings load into its siblings as
-# fact -- see the parallel lane workflow in ~/.codex/AGENTS.md.
-lane() {
-  if [[ -z "$1" ]]; then
-    echo "usage: lane <name>   # git worktree + claude, auto memory off" >&2
-    return 2
-  fi
-  CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -w "$1"
-}

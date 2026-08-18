@@ -1,4 +1,6 @@
 README.md
+AGENTS.md
+CLAUDE.md
 LICENSE
 .git
 .gitignore
@@ -9,10 +11,5 @@ scripts/
 # this repo targets is a Mac -- so there is no platform gating left anywhere in
 # the tree: no .chezmoi.os conditionals, no uname guards, no dnf branch.
 #
-# Machine-specific behaviour is still handled where it executes, by probing for
-# the thing rather than by branching on the host:
-#   - dot_gitconfig.tmpl keys off `stat` of the x509 cert, so the Meta internal
-#     endpoints appear only on a managed laptop.
-#   - dot_zshrc aliases claude/codex to /usr/local/bin only when those exist.
-#   - dot_zshrc defines `dc` only when the `dev` CLI is present.
-# Add a probe to the file rather than an entry here.
+# Optional capabilities are handled where they execute by probing for the tool
+# or directory rather than branching on the host.

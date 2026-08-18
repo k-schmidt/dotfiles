@@ -1,0 +1,4 @@
+interface:
+  display_name: "Diagnosing Bugs"
+  short_description: "Reproduce and diagnose difficult bugs"
+  default_prompt: "Use $diagnosing-bugs to reproduce and diagnose this failure."
