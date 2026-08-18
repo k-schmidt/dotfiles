@@ -8,10 +8,10 @@ macOS developer environment managed with **chezmoi**. Optimized for AI Engineeri
 
 * **Core:** `zsh`, `chezmoi`, `homebrew`
 * **Editor:** [Cursor](https://cursor.sh) (AI-native) & VS Code & Neovim
-* **Terminal:** iTerm2 with [Powerlevel10k](https://github.com/romkatv/powerlevel10k), `tmux`, `fzf`, `ripgrep`
+* **Terminal:** [Ghostty](https://ghostty.org) & iTerm2, [Powerlevel10k](https://github.com/romkatv/powerlevel10k), `tmux`, `fzf`, `zoxide`, `ripgrep`, `fd`
 * **Python:** `uv` (Blazing fast package management)
-* **AI Agents:** `claude-code`, `codex`, `cmux`
-* **Infra:** `orbstack` (Docker replacement), `direnv`, `gh`, `difftastic`
+* **AI Agents:** `claude-code`, `codex`, and [cmux](https://github.com/manaflow-ai/cmux) as the workspace shell around them
+* **Infra:** `orbstack` (Docker replacement), `direnv`, `gh`, `difftastic`, `lazygit`
 * **Productivity:** Raycast, Obsidian, Todoist, KeepingYouAwake
 
 ## Installation
@@ -77,15 +77,21 @@ Skills are reusable prompts that extend Claude Code. Pipeline: `/grill-with-docs
 
 * `dot_zshrc` — Shell config (Oh My Zsh, Powerlevel10k, aliases)
 * `dot_bashrc` / `dot_bash_profile` — Bash config, kept in step with `dot_zshrc`
-* `dot_tmux.conf` — Tmux (Ctrl-a prefix, mouse mode, TPM plugins)
+* `dot_tmux.conf` — Tmux (**Ctrl+Space** prefix, vi copy mode, mouse on, TPM plugins)
 * `dot_gitconfig` / `dot_gitignore_global` — Git user config and global ignores
 * `dot_p10k.zsh` — Powerlevel10k prompt theme
 * `dot_config/brew/Brewfile` — Master list of Homebrew formulae and casks
 * `dot_config/nvim/` — Neovim configuration (lazy.nvim, Catppuccin, Telescope)
+* `dot_config/ghostty/` — Ghostty terminal config
 * `dot_config/iterm2/` — iTerm2 preferences plist
 * `dot_config/cmux/` — cmux settings (editor, Claude Code integration)
 * `dot_claude/` — Claude Code global instructions, skills, and config
-* `run_once_*.sh` — One-time setup scripts (zsh plugins, TPM, macOS defaults)
+* `dot_local/bin/ralph` — Autonomous Claude loop driven by a local `PRD.md`
+* `Library/LaunchAgents/` — Caps Lock → Control remap
+* `.chezmoidata.toml` — Volta package list consumed by the install scripts
+* `run_once_*.sh` — Once per machine: macOS defaults, dark mode, Caps Lock remap
+* `run_after_*.sh` — Every apply, guarded and idempotent: oh-my-zsh, p10k, TPM. Deliberately not `run_once_`, which chezmoi marks done even when the script fails, so one flaky clone would strand them forever.
+* `run_onchange_*.sh.tmpl` — On manifest change: Homebrew packages, Volta packages
 
 ### VS Code
 
