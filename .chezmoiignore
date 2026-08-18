@@ -4,6 +4,7 @@ CLAUDE.md
 LICENSE
 .git
 .gitignore
+.pre-commit-config.yaml
 scripts/
 *.swp
 

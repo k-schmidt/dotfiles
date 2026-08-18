@@ -90,10 +90,15 @@ Publishing remains explicit:
 
 ```bash
 cd ~/.local/share/chezmoi
+pre-commit run --all-files
 git add .
 git commit -m "feat: description"
 git push
 ```
+
+Chezmoi installs the repository's pre-commit hook automatically. It checks
+portable file syntax, likely credential leaks, rendered shell sources, Neovim
+Lua formatting, and a full chezmoi dry run before each commit.
 
 ## Ownership
 
@@ -105,6 +110,7 @@ git push
 - `dot_config/cmux/` — cmux editor and agent-integration settings
 - `dot_zshrc`, `dot_bashrc`, `dot_bash_profile` — shell configuration
 - `dot_config/nvim/` — Neovim configuration
+- `.pre-commit-config.yaml` — repository-only validation and secret checks
 - `run_onchange_*.sh.tmpl` — idempotent package and integration reconciliation
 
 Codex desktop owns `~/.codex/config.toml`, authentication, plugins, MCP servers, project trust, hooks state, and runtime databases. VS Code Settings Sync owns VS Code settings, keybindings, and extensions. Neither mutable surface is tracked here.
