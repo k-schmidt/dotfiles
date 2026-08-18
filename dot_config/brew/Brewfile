@@ -16,6 +16,11 @@ brew "stylua"          # conform: lua formatter (no project-local equivalent)
 brew "shfmt"           # conform: shell formatter (no project-local equivalent)
 brew "volta"
 
+# Cloud, productivity, and document tooling
+brew "awscli"
+brew "gogcli"
+brew "pandoc"
+
 # AI coding agents and their primary desktop control plane. Homebrew owns each
 # of these; do not duplicate the CLIs through Volta.
 cask "chatgpt"
@@ -23,6 +28,10 @@ cask "codex"
 cask "claude-code"
 
 # Applications (Casks)
+cask "1password"
+cask "1password-cli"
+cask "dbeaver-community"
+cask "postman"
 cask "orbstack"
 cask "visual-studio-code"
 cask "raycast"
