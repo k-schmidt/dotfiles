@@ -1,6 +1,6 @@
 # PRD Template
 
-The PRD captures **what** to build, **why**, and **how the work divides across parallel workers**. Issue-level breakdown is handled by `/to-issues`; spawning the workers is handled by `/fan-out`.
+The PRD captures **what** to build, **why**, and **how the work divides across parallel agents**. Issue-level breakdown is handled by `/to-issues`. You create the worktrees and drive the lanes yourself, one cmux pane each.
 
 ```md
 # PRD: {Feature Name}
@@ -53,7 +53,7 @@ because the guess gets built twice in two incompatible ways.
 
 ## Worktree Plan
 
-How the work divides across parallel workers. `/fan-out` reads this directly.
+How the work divides across parallel agents. This is the routing table you work from when creating worktrees and assigning lanes.
 
 ### {worktree-name} — HITL | AFK
 
@@ -104,7 +104,7 @@ File paths belong in **Worktree Plan** and **Reserved files** only — they are 
 
 Keep them out of Problem Statement, Solution, User Stories, and Technical Decisions. Paths rot faster than intent does, and a stale path in a requirements section quietly misleads long after the feature ships. Prose describes modules; only the worktree plan names files.
 
-When a path in the worktree plan goes stale, fix it — that section is a live routing table for `/fan-out`, not a historical record.
+When a path in the worktree plan goes stale, fix it — that section is a live routing table you assign lanes from, not a historical record.
 
 ### On the two hard invariants
 

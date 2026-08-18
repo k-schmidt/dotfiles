@@ -137,3 +137,15 @@ if [[ -x /usr/local/bin/codex ]]; then
 fi
 
 alias cc='claude --dangerously-skip-permissions'
+
+# Start a parallel lane: its own worktree at .claude/worktrees/<name>, on branch
+# worktree-<name>. Auto memory is keyed to the repository rather than the checkout,
+# so leaving it on lets one lane's in-progress findings load into its siblings as
+# fact -- see the parallel lane workflow in ~/.codex/AGENTS.md.
+lane() {
+  if [[ -z "$1" ]]; then
+    echo "usage: lane <name>   # git worktree + claude, auto memory off" >&2
+    return 2
+  fi
+  CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -w "$1"
+}

@@ -5,7 +5,7 @@ description: Turn the current conversation context into a file-based PRD, includ
 
 This skill takes the current conversation context and codebase understanding and produces a PRD. Do NOT interview the user — just synthesize what you already know. Never use the AskUserQuestion tool.
 
-The PRD is the last document written while one agent still holds the whole picture. Everything downstream (`/to-issues`, then `/fan-out`) is a fan-out, so any decision left unmade here gets made independently — and incompatibly — by several workers at once. Settle the seams now.
+The PRD is the last document written while one agent still holds the whole picture. Downstream, `/to-issues` splits it and you hand each lane to a separate agent in its own worktree, so any decision left unmade here gets made independently — and incompatibly — by several agents at once. Settle the seams now.
 
 ## Process
 
@@ -28,7 +28,7 @@ The PRD is the last document written while one agent still holds the whole pictu
    - Name shared files that no worktree may touch (lockfiles, generated code, root config, migration sequence files). Assign each to exactly one worktree, or reserve it for the integration step.
    - Mark each worktree **HITL** or **AFK**. HITL work needs a human in the loop — an architectural call, a design review, a judgement about product behaviour. AFK work can be implemented and merged without one. Prefer AFK.
    - Prefer fewer, well-separated worktrees over many overlapping ones. Three clean lanes beat eight that collide.
-   - Sequence matters: if worktree B needs an interface that worktree A introduces, record that dependency so `/fan-out` starts A first.
+   - Sequence matters: if worktree B needs an interface that worktree A introduces, record that dependency so you know to start A's lane first.
    </worktree-rules>
 
    Check the worktree plan with the user before writing the PRD. This split is what the whole downstream pipeline is built on, and it is much cheaper to change here than after workers are running.

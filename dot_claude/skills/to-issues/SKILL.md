@@ -1,11 +1,11 @@
 ---
 name: to-issues
-description: Break a plan, spec, or PRD into independently-grabbable issues, grouped by the worktree that will own them. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into tasks.
+description: Break a plan, spec, or PRD into independently-grabbable issues, grouped by the worktree that will own them, so each lane can be handed to its own agent. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into tasks.
 ---
 
 # To Issues
 
-Break a plan into independently-grabbable issues, grouped by worktree so `/fan-out` can hand each group to a worker. Never use the AskUserQuestion tool.
+Break a plan into independently-grabbable issues, grouped by worktree so the user can hand each group to its own agent in its own checkout. Never use the AskUserQuestion tool.
 
 ## Process
 
@@ -47,7 +47,7 @@ Be aware of what that costs. An issue shaped by ownership rather than by user-vi
 - Within a worktree, vertical beats horizontal:
   - ❌ "Write all migrations" → "Write all handlers" → "Write all tests"
   - ✅ "Implement user creation (migration + handler + test)" → "Implement user deletion (migration + handler + test)"
-- Every issue names the files it expects to write, so `/fan-out` can verify no collision survived the breakdown
+- Every issue names the files it expects to write, so collisions are visible before any lane starts
 </shape-rules>
 
 ### 5. Quiz the user
@@ -141,10 +141,47 @@ If the issues were created to address a PRD, append a tracking table to the end 
 
 One row per issue, grouped by worktree, in dependency order (blockers first).
 
-### 8. Hand off to /fan-out
+### 8. Report the lane plan
 
-After publishing, report the shape of the fan-out: how many worktrees, which are AFK and can be handed to workers immediately, which are HITL and stay with the user, and which are blocked on an unresolved interface.
+The user creates the worktrees and drives each lane themselves, one cmux pane per lane. Your job ends at telling them exactly what to run.
 
-Then offer to run `/fan-out` to create the worktrees and spawn workers.
+First, verify the split mechanically — this is cheap now and expensive at merge time:
 
-Do not spawn workers from this skill, and do not begin implementation here. Breakdown and orchestration are kept separate so a failed fan-out can be retried without redoing the breakdown.
+- **Write-disjointness.** Collect the `Writes` field of every issue and confirm no file or directory appears under two different worktrees. Report any overlap; it is the one failure that guarantees hand-merging.
+- **Reserved files.** Confirm each is owned by exactly one worktree, or held for integration.
+- **Contract readiness.** Flag any lane that depends on an UNRESOLVED interface. It should not start.
+
+Then report the lane plan:
+
+| Lane | Type | Issues | Depends on | Start now? |
+|------|------|--------|------------|------------|
+
+Before giving any command, confirm the repo is set up for lanes — both files committed:
+
+- `.gitignore` contains `.claude/worktrees/`. Without it, every search in the main checkout returns one extra hit per lane.
+- `.worktreeinclude` lists the gitignored files a lane needs (`.env`, `.env.local`). Without it, each fresh worktree starts without them and breaks on startup.
+
+If either is missing, say so and offer to add it before any lane starts.
+
+Then give the concrete command per lane. Worktrees stay at the default location so one `.gitignore` line covers both agent types:
+
+```bash
+lane {lane-name}                                             # Claude lane
+```
+
+`lane` is a zsh helper for `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -w <name>`. Auto memory is keyed to the repository, not the checkout, so leaving it on lets one lane's in-progress findings load into its siblings as fact.
+
+Codex has no worktree flag, so create its worktree with git and launch inside it:
+
+```bash
+git worktree add .claude/worktrees/{lane-name} -b worktree-{lane-name} \
+  && cd .claude/worktrees/{lane-name} && codex               # Codex lane
+```
+
+Skip `--tmux` — it targets iTerm2 native panes, and cmux is already the pane manager.
+
+Note that a Codex lane created this way does **not** get Claude Code's write-isolation enforcement, which only applies to worktrees Claude Code creates. Nothing mechanically stops a Codex lane from writing into the main checkout, so its brief must state the ownership boundary explicitly.
+
+Finally, say plainly which lanes are HITL and stay in the main session with the user, and which are blocked and on what.
+
+Do not create worktrees, launch agents, or begin implementation from this skill.
