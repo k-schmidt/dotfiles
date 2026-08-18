@@ -7,7 +7,9 @@ if ! command -v pre-commit >/dev/null 2>&1; then
 	exit 0
 fi
 
-source_repository="$(chezmoi source-path)"
+# Resolved at template render time. Shelling out to `chezmoi` here would
+# deadlock: the parent `chezmoi apply` already holds the persistent state lock.
+source_repository={{ .chezmoi.workingTree | quote }}
 if ! git -C "$source_repository" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 	echo "Chezmoi source is not a Git repository. Skipping pre-commit hook installation."
 	exit 0
