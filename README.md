@@ -1,14 +1,16 @@
 # Dotfiles
 
-Cross-platform developer environment (macOS + Linux devvms) managed with **chezmoi**. Optimized for AI Engineering, Data Infrastructure, and high-performance workflows.
+macOS developer environment managed with **chezmoi**. Optimized for AI Engineering, Data Infrastructure, and high-performance workflows.
+
+> macOS is the only supported target. Every config assumes Homebrew, `pbcopy`, and a local display; there are no `.chezmoi.os` conditionals or `uname` guards left in the tree.
 
 ## The Stack
 
-* **Core:** `zsh`, `chezmoi`, `homebrew` (macOS), `fwdproxy` (Linux devvms)
+* **Core:** `zsh`, `chezmoi`, `homebrew`
 * **Editor:** [Cursor](https://cursor.sh) (AI-native) & VS Code & Neovim
 * **Terminal:** iTerm2 with [Powerlevel10k](https://github.com/romkatv/powerlevel10k), `tmux`, `fzf`, `ripgrep`
 * **Python:** `uv` (Blazing fast package management)
-* **AI Agents:** `claude-code`
+* **AI Agents:** `claude-code`, `codex`, `cmux`
 * **Infra:** `orbstack` (Docker replacement), `direnv`, `gh`, `difftastic`
 * **Productivity:** Raycast, Obsidian, Todoist, KeepingYouAwake
 
@@ -26,27 +28,7 @@ xcode-select --install
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply k-schmidt
 ```
 
-### Linux Devvm
-
-1. Clone and bootstrap (proxy required for GitHub access):
-```bash
-export http_proxy=http://fwdproxy:8080 https_proxy=http://fwdproxy:8080
-git clone https://github.com/k-schmidt/dotfiles.git ~/dotfiles
-cd ~/dotfiles && ./executable_chezmoi_install.sh
-```
-
-2. Symlink chezmoi source to the git repo:
-```bash
-rm -rf ~/.local/share/chezmoi
-ln -s ~/dotfiles ~/.local/share/chezmoi
-```
-
-3. Future updates:
-```bash
-cd ~/dotfiles && git pull && ~/.local/bin/chezmoi apply
-```
-
-### Post-Install (macOS only)
+### Post-Install
 
 1. **Authenticate:** `gh auth login` and `claude auth login`
 2. **Fonts:** iTerm2 → Settings → Profiles → Text → **JetBrainsMono Nerd Font**
@@ -66,7 +48,7 @@ chezmoi edit ~/.zshrc
 chezmoi apply
 ```
 
-### Adding a Brew package (macOS)
+### Adding a Brew package
 
 ```bash
 chezmoi edit ~/.config/brew/Brewfile
@@ -94,16 +76,24 @@ Skills are reusable prompts that extend Claude Code. Pipeline: `/grill-with-docs
 ## Structure
 
 * `dot_zshrc` — Shell config (Oh My Zsh, Powerlevel10k, aliases)
-* `dot_bashrc` / `dot_bash_profile` — Bash config (auto-launches zsh, proxy detection for devvms)
+* `dot_bashrc` / `dot_bash_profile` — Bash config, kept in step with `dot_zshrc`
 * `dot_tmux.conf` — Tmux (Ctrl-a prefix, mouse mode, TPM plugins)
 * `dot_gitconfig` / `dot_gitignore_global` — Git user config and global ignores
 * `dot_p10k.zsh` — Powerlevel10k prompt theme
-* `dot_config/brew/Brewfile` — Master list of Homebrew packages (macOS only)
+* `dot_config/brew/Brewfile` — Master list of Homebrew formulae and casks
 * `dot_config/nvim/` — Neovim configuration (lazy.nvim, Catppuccin, Telescope)
-* `dot_config/iterm2/` — iTerm2 preferences plist (macOS only)
+* `dot_config/iterm2/` — iTerm2 preferences plist
+* `dot_config/cmux/` — cmux settings (editor, Claude Code integration)
 * `dot_claude/` — Claude Code global instructions, skills, and config
 * `run_once_*.sh` — One-time setup scripts (zsh plugins, TPM, macOS defaults)
 
-### Cross-platform notes
+### VS Code
 
-macOS-only scripts (`set_macos_defaults.sh`, `activate_key_remapping.sh`) exit early on Linux. The `bash_profile` auto-detects Meta devvms and sets the GitHub proxy.
+VS Code config is **deliberately not in this repo.** Its own Settings Sync (GitHub account) owns `settings.json`, `keybindings.json`, and the extension list. Tracking them here as well would double-own the same three files, and whichever system wrote last would win. Change VS Code settings in VS Code.
+
+### Machine-specific behaviour
+
+Handled by probing, not by branching on the host:
+
+* `dot_gitconfig.tmpl` adds the Meta internal endpoints only when the x509 cert exists.
+* `dot_zshrc` aliases `claude` / `codex` to `/usr/local/bin` only when a centrally managed copy is there, and defines `dc` only when the `dev` CLI is present.

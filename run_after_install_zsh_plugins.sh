@@ -1,27 +1,11 @@
 #!/bin/bash
 
 # run_after_, not run_once_. See run_after_install_tpm.sh for the reasoning:
-# a run_once_ script that fails is still marked done and never retried, which
-# is how the devserver ended up with no oh-my-zsh. Every step below is guarded
-# by a directory check, so a re-run is four stat calls when nothing is missing.
-#
-# The oh-my-zsh installer curls raw.githubusercontent.com, which the gitconfig
-# proxy block does not cover and which no environment variable can reach on an
-# mTLS-only host -- so that one can still fail. It now gets another attempt on
-# every apply instead of exactly one, forever.
-{{ if eq .chezmoi.os "linux" }}
-# github.com and raw.githubusercontent.com need fwdproxy on a devserver. Only
-# resolve a route when something is actually missing, so the common case where
-# everything is already installed stays offline and instant. Scoped to this
-# script: exporting a proxy from zshrc would misroute internal traffic.
-{{ template "linux-net.sh" . }}
-if [ ! -d "$HOME/.oh-my-zsh" ] \
-   || [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ] \
-   || [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ] \
-   || [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-  net_resolve && net_export_env
-fi
-{{ end }}
+# a run_once_ script that fails is still marked done and never retried, so a
+# single flaky network call would leave oh-my-zsh permanently missing. Every
+# step below is guarded by a directory check, so a re-run is four stat calls
+# when nothing is missing, and a failed clone gets another attempt on every
+# apply instead of exactly one, forever.
 # 1. Install Oh My Zsh (unattended) if it's missing
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "Installing Oh My Zsh..."

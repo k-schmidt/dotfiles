@@ -1,6 +1,6 @@
 # Ghostty configuration
 # Docs: https://ghostty.org/docs/config/reference
-# Reload in-place: cmd+shift+, (macOS) / ctrl+shift+, (Linux)
+# Reload in-place: cmd+shift+,
 
 # --- Font ---------------------------------------------------------------
 font-family = JetBrainsMono Nerd Font Mono
@@ -34,10 +34,9 @@ shell-integration-features = cursor,sudo,title
 # --- Scrollback ---------------------------------------------------------
 # Bytes, not lines. Default is 10MB.
 scrollback-limit = 33554432
-{{ if eq .chezmoi.os "darwin" }}
-# --- macOS only ---------------------------------------------------------
+
+# --- macOS --------------------------------------------------------------
 macos-titlebar-style = tabs
 macos-option-as-alt = true
 font-thicken = true
 quit-after-last-window-closed = false
-{{ end }}

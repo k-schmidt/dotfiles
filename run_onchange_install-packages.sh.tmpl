@@ -1,5 +1,4 @@
 #!/bin/bash
-{{ if eq .chezmoi.os "darwin" -}}
 
 # dot_config/brew/Brewfile hash: {{ include "dot_config/brew/Brewfile" | sha256sum }}
 
@@ -10,4 +9,3 @@ else
     echo "Error: Homebrew not found. Skipping package installation."
 fi
 
-{{ end -}}

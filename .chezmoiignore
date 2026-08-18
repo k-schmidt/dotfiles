@@ -5,16 +5,14 @@ LICENSE
 scripts/
 *.swp
 
-# Only repo metadata is ignored. Everything else deploys to every machine,
-# including config that a given platform cannot use — an unread
-# ~/.config/ghostty on the devserver costs nothing and keeps the two machines
-# identical.
+# Only repo metadata is ignored. Everything else deploys, and every machine
+# this repo targets is a Mac -- so there is no platform gating left anywhere in
+# the tree: no .chezmoi.os conditionals, no uname guards, no dnf branch.
 #
-# This is safe because platform-specific behaviour is handled where it
-# executes, not by withholding files:
-#   - run_once_activate_key_remapping.sh and run_once_set_macos_defaults.sh
-#     both exit 0 immediately when uname is not Darwin.
-#   - run_once_configure_macos.sh, run_onchange_install-packages.sh, and
-#     run_onchange_install-linux-packages.sh are template-gated on
-#     .chezmoi.os and render to a bare shebang off their platform.
-# Add a guard to the script rather than an entry here.
+# Machine-specific behaviour is still handled where it executes, by probing for
+# the thing rather than by branching on the host:
+#   - dot_gitconfig.tmpl keys off `stat` of the x509 cert, so the Meta internal
+#     endpoints appear only on a managed laptop.
+#   - dot_zshrc aliases claude/codex to /usr/local/bin only when those exist.
+#   - dot_zshrc defines `dc` only when the `dev` CLI is present.
+# Add a probe to the file rather than an entry here.

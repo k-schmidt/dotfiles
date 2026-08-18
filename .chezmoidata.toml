@@ -1,42 +1,22 @@
-# Volta-managed Node tooling. Identical on every machine.
+# Volta-managed Node tooling.
 #
-# claude-code and codex are deliberately absent. Both the devserver and the
-# work laptop carry a centrally managed copy at /usr/local/bin, and zshrc
-# aliases to it whenever it exists — so a Volta install would be downloaded and
-# kept up to date only to be shadowed by the alias on every invocation.
+# Homebrew owns everything it packages (see dot_config/brew/Brewfile); Volta
+# owns what only ships on npm. claude-code is a cask and therefore lives in the
+# Brewfile, not here -- installing it in both places is what left this machine
+# running a stale 2.1.223 from the Caskroom while a newer 2.1.232 sat shadowed
+# in ~/.volta/bin, because zshrc prepends Homebrew after Volta.
+#
+# codex has no cask, so npm is the only option.
+#
+# On a Meta-managed laptop /usr/local/bin holds a centrally managed claude and
+# codex; zshrc aliases to those whenever they exist, which shadows both of the
+# installs below. That is intentional -- the aliases are the override, and the
+# entries here are what make a personal Mac come up with the same tools.
 [packages.volta]
   common = [
     "node",
     "typescript",
     "neovim",
-    "prettier"
-  ]
-
-# dnf packages for the Linux devserver. macOS covers the same ground through
-# dot_config/brew/Brewfile.
-#
-# Confirmed installable on the devserver. jq and unzip are here to support
-# run_onchange_install-linux-packages.sh itself: jq reads release tags off the
-# GitHub API, unzip unpacks stylua. gcc is for `tree-sitter build`, which
-# compiles a parser.so per language and would otherwise fail on a box that
-# never had a C toolchain installed.
-#
-# Absent on purpose, because the repos do not carry them at a usable version.
-# That script fetches each from its upstream release into ~/.local instead:
-#   neovim       distro build predates what this config needs (0.10+)
-#   tree-sitter  nvim-treesitter (main) requires the CLI at >= 0.26.1
-#   volta        upstream installer
-#   direnv, lazygit, difftastic (difft), stylua, shfmt, uv, gh
-[packages.dnf]
-  linux = [
-    "zsh",
-    "git",
-    "tmux",
-    "ripgrep",
-    "fd-find",
-    "fzf",
-    "jq",
-    "unzip",
-    "zoxide",
-    "gcc"
+    "prettier",
+    "@openai/codex"
   ]

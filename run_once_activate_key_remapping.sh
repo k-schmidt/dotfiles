@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if [ "$(uname)" != "Darwin" ]; then
-  exit 0
-fi
-
 # Unload if it exists (to refresh changes)
 if launchctl list | grep -q com.local.KeyRemapping; then
     launchctl unload ~/Library/LaunchAgents/com.local.KeyRemapping.plist

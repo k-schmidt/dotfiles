@@ -2,6 +2,39 @@
   "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
   "schemaVersion": 1,
 
+  // ---- File-managed settings ------------------------------------------------
+  // Everything below this block is the template cmux writes on first launch,
+  // left commented as reference. Only the two objects here are actually
+  // enforced; anything absent falls back to whatever is saved in Settings.
+
+  "app": {
+    // Free-form editor command, not an enum -- cmux shells out to it.
+    "preferredEditor": "code",
+    // Route everything to VS Code rather than cmux's built-in viewers --
+    // preferredEditor only fires for files cmux is not handling itself, so
+    // both of these have to be false for it to take effect universally.
+    "openSupportedFilesInCmux": false,
+    "openMarkdownInCmuxViewer": false
+  },
+
+  "automation": {
+    "claudeCodeIntegration": true,
+{{- $managed := "/usr/local/bin/claude" }}
+{{- if stat $managed }}
+    // A Meta-managed laptop keeps the canonical claude here, and dot_zshrc
+    // aliases to it. cmux does not read shell aliases, so pin it explicitly or
+    // cmux would launch the Homebrew cask instead.
+    "claudeBinaryPath": "{{ $managed }}"
+{{- else if stat "/opt/homebrew/bin/claude" }}
+    // Homebrew cask (dot_config/brew/Brewfile) is the only copy on a personal
+    // Mac. Pinned so cmux never picks up a stray npm-installed claude.
+    "claudeBinaryPath": "/opt/homebrew/bin/claude"
+{{- else }}
+    // No claude on disk yet; leave empty so cmux falls back to PATH lookup.
+    "claudeBinaryPath": ""
+{{- end }}
+  },
+
   // This file uses JSON with comments (JSONC).
   // Uncomment and edit any setting to make it file-managed.
   // Remove a setting to fall back to the value saved in Settings.

@@ -18,6 +18,8 @@
 
 # Dotfiles (chezmoi)
 - Always edit source files in `~/.local/share/chezmoi/`, never targets directly.
-- Push after commit — `origin/master` keeps the Linux machine in sync.
-- zshrc is shared across **macOS (Apple Silicon)** and **Linux**. Guard platform-specific paths with existence checks (`if [[ -d /opt/homebrew/bin ]]; then ... fi`). Never assume `/opt/homebrew` exists.
+- Push after commit.
+- **macOS (Apple Silicon) is the only supported target.** No `.chezmoi.os` conditionals, no `uname` guards. Still probe for optional things (`if [[ -d /opt/homebrew/bin ]]; then ... fi`) so an Intel Mac or a missing tool degrades quietly.
 - PATH order: Homebrew > Volta > system. Homebrew block must appear after Volta in the file so it prepends last.
+- Homebrew owns anything with a formula or cask; Volta owns npm-only tools. Never install the same tool through both — the Homebrew copy wins and silently shadows the newer one.
+- **Do not track VS Code config in chezmoi.** VS Code Settings Sync owns `settings.json`, `keybindings.json`, and extensions. Adding them here double-owns the same files and last writer wins.

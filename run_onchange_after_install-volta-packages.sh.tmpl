@@ -22,15 +22,6 @@ if ! command -v volta &> /dev/null; then
     echo "Volta not found. Skipping package installation."
     exit 0
 fi
-{{ if eq .chezmoi.os "linux" }}
-# volta fetches node from nodejs.org and packages from the npm registry using
-# its own HTTP client, which reads the standard proxy variables. Without them
-# every install below fails on a devserver.
-{{ template "linux-net.sh" . }}
-if net_resolve; then
-    net_export_env
-fi
-{{ end }}
 echo "Installing/Updating Volta packages..."
 
 # 2. Iterate through the list resolved above from .chezmoidata.toml

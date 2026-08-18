@@ -16,6 +16,11 @@ brew "stylua"          # conform: lua formatter (no project-local equivalent)
 brew "shfmt"           # conform: shell formatter (no project-local equivalent)
 brew "volta"
 
+# AI coding agents. claude-code is a cask, so Homebrew owns it -- do not also
+# install @anthropic-ai/claude-code through Volta; the Caskroom symlink wins on
+# PATH and would shadow it. codex has no cask and lives in .chezmoidata.toml.
+cask "claude-code"
+
 # Applications (Casks)
 cask "cursor"
 cask "orbstack"
