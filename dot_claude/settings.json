@@ -5,32 +5,6 @@
     "CLAUDE_CODE_VERSION_OVERRIDE": "latest",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "model": "claude-opus-5[1m]",
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  },
-  "enabledPlugins": {
-    "brain@agent-market": true,
-    "para-workspace@agent-market": true,
-    "datamate@agent-market": true,
-    "data@agent-market": true,
-    "vscode-commands@agent-market": true,
-    "browser@agent-market": true,
-    "source-control-at-meta@agent-market": true,
-    "test-runner@agent-market": true,
-    "scheduler@agent-market": true,
-    "reviewmate@agent-market": true,
-    "easy-diff@agent-market": true,
-    "plan-sync@agent-market": true,
-    "10x-engineer@agent-market": true,
-    "figma-mcp-server-guide@agent-market": true,
-    "design@agent-market": true,
-    "transwarp@agent-market": true,
-    "lineagemate@agent-market": true,
-    "debrief@agent-market": true
-  },
-  "tui": "fullscreen",
   "permissions": {
     "allow": [
       "Bash(bash *source-all.sh*)",
@@ -102,5 +76,32 @@
       "Bash(realpath *)",
       "Bash(meta *)"
     ]
-  }
+  },
+  "model": "claude-opus-5[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "brain@agent-market": true,
+    "para-workspace@agent-market": true,
+    "datamate@agent-market": true,
+    "data@agent-market": true,
+    "vscode-commands@agent-market": true,
+    "browser@agent-market": true,
+    "source-control-at-meta@agent-market": true,
+    "test-runner@agent-market": true,
+    "scheduler@agent-market": true,
+    "reviewmate@agent-market": true,
+    "easy-diff@agent-market": true,
+    "plan-sync@agent-market": true,
+    "10x-engineer@agent-market": true,
+    "figma-mcp-server-guide@agent-market": true,
+    "design@agent-market": true,
+    "transwarp@agent-market": true,
+    "lineagemate@agent-market": true,
+    "debrief@agent-market": true,
+    "gdrive-mount@agent-market": true
+  },
+  "tui": "fullscreen"
 }
