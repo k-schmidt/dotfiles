@@ -69,6 +69,7 @@ Planning, artifact-generation, handoff, and documentation-reconciliation skills 
 - **`$diagnosing-bugs`** establishes a tight reproduction, tests falsifiable hypotheses, and stops at root cause unless a fix was requested.
 - **`$review-before-publish`** reviews correctness, repository standards, and specification fidelity across committed and uncommitted changes without crossing the publish boundary.
 - **`$dotfiles`** manages chezmoi source, application, and synchronization.
+- **`$unslop`** strips AI writing patterns from human-facing prose and leaves agent-facing text alone.
 
 ## Editing
 
