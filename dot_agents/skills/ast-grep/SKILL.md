@@ -13,6 +13,10 @@ Reach for `ast-grep` when the query names a relationship between syntax elements
 
 Stay with `rg` when a name, string, path, or comment is the whole query. `ast-grep` costs a rule-authoring round trip; do not pay it for a lookup.
 
+## Confirm the tool is present
+
+`ast-grep` is optional tooling, not a guaranteed capability. Check `command -v ast-grep` before planning around it. When it is absent, install it with `brew install ast-grep` if that is in scope, and otherwise fall back to `rg` while stating plainly which part of the query the fallback cannot answer — containment, nesting, and arity are exactly what regex loses. Never let a structural question quietly become a textual one; a silent downgrade returns a confident undercount.
+
 ## Build the rule incrementally
 
 1. Write one snippet the rule must match and one closely related snippet it must not. The negative case is what proves the rule is actually structural.
