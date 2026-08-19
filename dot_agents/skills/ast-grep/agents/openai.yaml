@@ -1,0 +1,4 @@
+interface:
+  display_name: "ast-grep"
+  short_description: "Search and rewrite code structurally"
+  default_prompt: "Use $ast-grep to search this codebase structurally."

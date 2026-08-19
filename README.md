@@ -67,6 +67,7 @@ Personal skills live in `~/.agents/skills` and are shared with Claude through a 
 Planning, artifact-generation, handoff, and documentation-reconciliation skills are explicit actions; invoke them by name. Engineering disciplines that should protect ordinary work can be selected automatically:
 
 - **`$diagnosing-bugs`** establishes a tight reproduction, tests falsifiable hypotheses, and stops at root cause unless a fix was requested.
+- **`$ast-grep`** searches and rewrites code structurally when shape matters more than text.
 - **`$review-before-publish`** reviews correctness, repository standards, and specification fidelity across committed and uncommitted changes without crossing the publish boundary.
 - **`$dotfiles`** manages chezmoi source, application, and synchronization.
 - **`$unslop`** strips AI writing patterns from human-facing prose and leaves agent-facing text alone.

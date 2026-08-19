@@ -49,6 +49,7 @@ Present divergences **one at a time**. For each:
 Wait for the user's answer before continuing. Branch on their response:
 
 - **"Code is right"** → update the doc immediately using the formats in [CONTEXT-FORMAT.md](../grill-with-docs/CONTEXT-FORMAT.md) and [ADR-FORMAT.md](../grill-with-docs/ADR-FORMAT.md).
+  When the divergence is a rule the code should follow rather than a fact the docs should record, propose enforcement first. A lint rule, type, schema constraint, test, or pre-commit hook prevents the drift; an `AGENTS.md` sentence only describes it, and it drifts again the next time nobody reads it. Encode what can be checked, and write prose only for the reasoning behind it.
 - **"Doc is right"** → the code has a bug or regression. Draft an issue:
   - Title, description of the divergence, and what the expected behavior should be (per the doc).
   - Ask: create via `gh issue create`, or write to `specs/issues/`?
@@ -76,5 +77,6 @@ After all divergences are resolved, print a short summary:
 - Use the applicable `docs/CONTEXT.md` vocabulary when referring to domain concepts. If a term isn't in the glossary, that's itself a divergence to surface.
 - Don't batch updates — write each doc change as it's approved so nothing gets lost.
 - Don't suggest ADRs that fail the three-part test (hard to reverse, surprising, real trade-off).
+- Prefer a check to a sentence. An enforceable rule belongs where it executes; documentation carries the reason, not the enforcement.
 - Don't touch docs that aren't divergent. This is reconciliation, not a rewrite.
 - If no divergences are found, say so and stop. Don't invent work.

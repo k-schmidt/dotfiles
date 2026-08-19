@@ -44,6 +44,8 @@ Then explore the codebase. Keep a small or cohesive codebase survey in the prima
 
 Apply the **deletion test** to anything you suspect is shallow: would deleting it concentrate complexity, or just move it? A "yes, concentrates" is the signal you want.
 
+Then apply the **check test** to anything that survives: when a candidate's main benefit is preventing a recurring mistake rather than concentrating complexity, a lint rule, type, or test at the existing seam may buy the same guarantee for far less. Carry the answer into the card — it sets the recommendation strength. A deepening that survives this question is worth more than one that was never asked it.
+
 ### 2. Present candidates as an HTML report
 
 Write a self-contained HTML file to the OS temp directory so nothing lands in the repo. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (or `%TEMP%` on Windows), and write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it for the user — `xdg-open <path>` on Linux, `open <path>` on macOS, `start <path>` on Windows — and tell them the absolute path.

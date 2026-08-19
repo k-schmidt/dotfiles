@@ -34,13 +34,15 @@ Then write two to four ranked, falsifiable hypotheses. For each, state:
 - the observation it predicts;
 - the smallest probe that could disprove it.
 
+Rank state above code whenever the symptom appeared without a corresponding code change — after a restart, an upgrade, a branch switch, a dependency install, or on one machine only. Persistent state, caches, lockfiles, generated artifacts, stale configuration, and environment drift explain that class of failure more often than the source does, and ruling them out is cheaper than reading code.
+
 Share the ranking when user context could cheaply reorder it, but continue with the strongest evidence when the user is AFK. Test one variable at a time. Prefer debugger or profiler evidence, then narrowly placed instrumentation at boundaries that distinguish hypotheses. Give temporary instrumentation a unique searchable marker and remove it before completion.
 
 For performance regressions, establish a measured baseline before changing anything. Compare profiles, query plans, traces, or timings against that baseline; logs alone are rarely a sufficient performance signal.
 
 ## Conclude or fix
 
-A diagnosis is complete only when the explanation accounts for the original signal and names the evidence that ruled out plausible alternatives. Report the root cause, triggering conditions, impact, confidence, and reasonable fix options. Stop there when the request was diagnosis-only.
+A diagnosis is complete only when the explanation accounts for the original signal and names the evidence that ruled out plausible alternatives. Report the root cause, triggering conditions, impact, confidence, whether the same cause is likely to have produced siblings elsewhere, and reasonable fix options. Stop there when the request was diagnosis-only.
 
 When a fix is authorized:
 
@@ -48,6 +50,7 @@ When a fix is authorized:
 2. Apply the smallest fix that addresses the demonstrated cause.
 3. Run the regression test and the original, unminimized signal.
 4. Run proportionate surrounding verification.
-5. Remove temporary instrumentation and throwaway artifacts, retaining only useful tests or documented fixtures.
+5. Search for the same defect shape elsewhere. A cause that produced one instance has usually produced siblings; reach for `$ast-grep` when the defect is structural rather than a literal string. Fix the instances inside the authorized scope, report the ones outside it, and say when a change at the seam would make the whole class impossible rather than merely absent.
+6. Remove temporary instrumentation and throwaway artifacts, retaining only useful tests or documented fixtures.
 
 If no faithful test seam exists, say so explicitly rather than adding a shallow test that cannot catch the real failure. Treat the missing seam as an architectural finding.
