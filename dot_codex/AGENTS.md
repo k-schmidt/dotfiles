@@ -20,6 +20,7 @@
 
 - Codex desktop is the primary control plane for planning, implementation, managed worktrees, review, and handoff.
 - A **task** is the unit of conversation and ownership. A **managed worktree** is its optional isolated execution environment.
+- Never `cd` into a worktree. A shell tool keeps one working directory across every later call, so removing that path leaves the shell unrecoverable and ends the session. Use `git -C <path>`, a tool's own directory flag, absolute paths, or a subshell `(cd <path> && ...)` instead.
 - cmux with Codex CLI is the terminal fallback. VS Code is the visual-inspection fallback. Claude Code is an explicitly invoked compatibility fallback.
 - Use normal Codex sandbox and approval defaults. Do not create shortcuts that bypass them.
 - Classify work as **HITL** when it requires human judgement and **AFK** when it can reach a review-ready result autonomously.

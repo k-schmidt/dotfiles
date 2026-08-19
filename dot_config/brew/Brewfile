@@ -6,6 +6,7 @@ brew "direnv"
 brew "difftastic"
 brew "lazygit"
 brew "ripgrep"
+brew "ast-grep" # structural search and rewriting; complements ripgrep
 brew "fd"
 brew "fzf"
 brew "zoxide"

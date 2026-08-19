@@ -16,12 +16,16 @@ Synthesize the existing conversation and repository evidence into a decision-com
 5. If a critical module, test, interface, or ownership decision is still missing, ask only for that decision. Otherwise synthesize without interviewing.
 6. Follow a repository-specific planning layout when its instructions declare one. Otherwise check for existing `specs/PRD-*.md` files and avoid overwriting one without approval.
 7. By default, write `specs/PRD-{feature-name}.md` using [PRD-TEMPLATE.md](./PRD-TEMPLATE.md).
-8. Report the path, unresolved blockers, HITL/AFK task count, and the next step: `$to-tasks`.
+8. Self-check the written PRD against the invariants below before reporting it. Repair violations in the file; do not report a PRD with a known defect and let the user find it.
+9. Report the path, unresolved blockers, HITL/AFK task count, and the next step: `$to-tasks`.
 
 ## Invariants
 
+Check each against the file as written, not against what the plan intended.
+
 - `specs/` is reserved for PRDs and issue files; persistent design documentation belongs under `docs/`.
-- No two planned tasks write the same file.
-- No task starts against an unresolved interface it depends on.
+- No two planned tasks write the same file. Read the ownership lists against each other rather than trusting the split that produced them.
+- No task starts against an unresolved interface it depends on. Every **UNRESOLVED** contract blocks its dependents explicitly.
+- Every shared interface a separate task consumes appears under **Frozen Interfaces**. A contract settled in conversation but absent from the file gets re-decided independently by each worker.
 - Requirements describe intent; file paths appear only where ownership must be concrete.
 - Implementation tasks stop at a tested, review-ready diff unless publishing is explicitly in scope.
